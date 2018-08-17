@@ -39,10 +39,6 @@ class CommandStore extends Collection {
   load(file) {
     const filepath = path.join(this.dir, file);
     try {
-      const parsedFile = {
-        path: file,
-        name: path.parse(filepath).name
-      };
       const command = this.set(new (require(filepath))(this.client));
       delete require.cache[filepath];
       return command;
