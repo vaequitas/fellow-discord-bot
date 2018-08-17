@@ -5,6 +5,7 @@ class Source extends Command {
     super(...args, {
       name: 'source',
       description: 'Provides a link to the bot source code',
+      aliases: ['sauce'],
     });
   }
 

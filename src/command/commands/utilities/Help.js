@@ -5,6 +5,7 @@ class Help extends Command {
     super(...args, {
       name: 'help',
       description: 'Get help on a command',
+      aliases: ['h', 'halp'],
     });
   }
 
