@@ -1,8 +1,11 @@
 # fellow-discord-bot
 A discord bot for the AniFellows discord server
 
-This requires you to have a file called .bot.yml in the top level of the repo with the following contents:
+To run this bot, you need to create a JSON file at the top-level of this repo called .config.json with contents
 ```
-bot:
-  token: TOKEN_ID
+{
+    "token": your bot token,
+    "prefix": your desired command prefix,
+    "activity": the bot activity you desire,
+}
 ```
