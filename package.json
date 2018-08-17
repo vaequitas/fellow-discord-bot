@@ -8,6 +8,7 @@
         "discord.io": "^2.5.3",
         "discord.js": "^11.4.2",
         "fs-nextra": "^0.3.7",
+        "node-fetch": "^2.2.0",
         "winston": "^3.0.0"
     }
 }
