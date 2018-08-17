@@ -18,11 +18,6 @@ client.on('message', async message => {
   if (client.commands.has(command))
     return client.commands.get(command).run(message);
 
-  if (command === 'source') {
-    const m = "My source code is at https://github.com/vaequitas/fellow-discord-bot :heart:";
-    return message.channel.send(m);
-  }
-
   if (command === 'purge') {
     const deleteCount = parseInt(args[0], 10);
 
