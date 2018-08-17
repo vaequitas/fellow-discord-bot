@@ -47,6 +47,16 @@ client.on('message', async message => {
     const m    = `https://anilist.co/user/${user}`
     return message.channel.send(m);
   }
+
+  if (command === 'wait') {
+    const time = parseInt(args.shift(), 10);
+    if (!time || time < 1 || time > 10)
+      return message.reply('Please provide a time value in seconds between 1 and 10');
+
+    await new Promise(resolve => setTimeout(resolve, (time * 1000)));
+
+    return message.reply(`I waited for ${time} seconds`);
+  }
 });
 
 client.login(config.token);
