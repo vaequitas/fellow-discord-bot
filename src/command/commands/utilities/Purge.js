@@ -5,6 +5,7 @@ class Purge extends Command {
     super(...args, {
       name: 'purge',
       description: 'Deletes a number of messages from the channel',
+      usage: 'purge delete_count'
     });
   }
 

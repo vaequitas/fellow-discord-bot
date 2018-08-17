@@ -5,7 +5,9 @@ class Show extends Command {
   constructor(...args) {
     super(...args, {
       name: 'anime',
-      description: 'Get a link to a show on anilist',
+      description: 'searches for the specified show',
+      usage: 'anime show_title',
+      long_description: 'This command queries the AniList API to try and find the best match for your query',
       aliases: ['show'],
     });
   }

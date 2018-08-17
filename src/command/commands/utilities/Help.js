@@ -4,7 +4,8 @@ class Help extends Command {
   constructor(...args) {
     super(...args, {
       name: 'help',
-      description: 'Get help on a command',
+      description: 'display help information for a command',
+      usage: 'help [command]',
       aliases: ['h', 'halp'],
     });
   }
@@ -15,7 +16,7 @@ class Help extends Command {
       return message.channel.send(`Available commands: ${this.getCommandsString()}`);
 
     if (this.client.commands.has(command))
-      return message.channel.send(`${this.client.commands.get(command).description}`);
+      return message.channel.send(`${this.client.commands.get(command).getHelp()}`);
 
     return message.channel.send(`Could not find command named '${command}'`);
   }
@@ -23,6 +24,7 @@ class Help extends Command {
   getCommandsString() {
     return `${[...this.client.commands.keys()].join(', ')}`;
   }
+
 }
 
 module.exports = Help;
