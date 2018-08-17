@@ -11,10 +11,17 @@ class Help extends Command {
 
   async run(message, args) {
     const command = args[0];
+    if (!command)
+      return message.channel.send(this.getCommandsString());
+
     if (this.client.commands.has(command))
       return message.channel.send(`${this.client.commands.get(command).description}`);
 
     return message.channel.send(`Could not find command named '${command}'`);
+  }
+
+  getCommandsString() {
+    return `${[...this.client.commands.keys()].join(', ')}`;
   }
 }
 
