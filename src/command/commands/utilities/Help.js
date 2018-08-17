@@ -9,8 +9,12 @@ class Help extends Command {
     });
   }
 
-  async run(message) {
-    return message.channel.send('HELP!');
+  async run(message, args) {
+    const command = args[0];
+    if (this.client.commands.has(command))
+      return message.channel.send(`${this.client.commands.get(command).description}`);
+
+    return message.channel.send(`Could not find command named '${command}'`);
   }
 }
 
