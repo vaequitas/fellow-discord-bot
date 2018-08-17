@@ -4,7 +4,7 @@ const client = new (require('./src/client/FellowsClient.js'))();
 
 client.on('ready', () => {
   console.log(`Bot has started with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds`);
-  client.user.setActivity(`Serving ${client.guilds.size} servers`);
+  client.user.setActivity(`Being awesome`);
 });
 
 client.on('message', async message => {
@@ -16,7 +16,7 @@ client.on('message', async message => {
   const command = args.shift().toLowerCase();
 
   if (client.commands.has(command))
-    return client.commands.get(command).run(message);
+    return client.commands.get(command).run(message, args);
 });
 
 client.login(config.token);

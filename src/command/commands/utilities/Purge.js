@@ -1,4 +1,4 @@
-const Command = require('../Command.js');
+const Command = require('../../Command.js');
 
 class Purge extends Command {
   constructor(...args) {
@@ -8,7 +8,7 @@ class Purge extends Command {
     });
   }
 
-  async run(message) {
+  async run(message, args) {
     const deleteCount = parseInt(args[0], 10);
 
     if(!deleteCount || deleteCount < 2 || deleteCount > 100)

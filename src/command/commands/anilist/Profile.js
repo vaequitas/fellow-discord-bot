@@ -1,4 +1,4 @@
-const Command = require('../Command.js');
+const Command = require('../../Command.js');
 
 class Profile extends Command {
   constructor(...args) {
@@ -8,7 +8,7 @@ class Profile extends Command {
     });
   }
 
-  async run(message) {
+  async run(message, args) {
     const user = args.shift().toLowerCase();
     const m    = `https://anilist.co/user/${user}`
     return message.channel.send(m);
