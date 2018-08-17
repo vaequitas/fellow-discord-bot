@@ -18,11 +18,6 @@ client.on('message', async message => {
   if (client.commands.has(command))
     return client.commands.get(command).run(message);
 
-  if (command === 'ping') {
-    const m = await message.channel.send('Ping?');
-    return m.edit(`Pong! Latency is ${m.createdTimestamp - message.createdTimestamp}ms.`);
-  }
-
   if (command === 'source') {
     const m = "My source code is at https://github.com/vaequitas/fellow-discord-bot :heart:";
     return message.channel.send(m);
