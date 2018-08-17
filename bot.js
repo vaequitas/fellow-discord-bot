@@ -34,12 +34,6 @@ client.on('message', async message => {
     return message.channel.send(m);
   }
 
-  if (command === 'profile') {
-    const user = args.shift().toLowerCase();
-    const m    = `https://anilist.co/user/${user}`
-    return message.channel.send(m);
-  }
-
   if (command === 'wait') {
     const time = parseInt(args.shift(), 10);
     if (!time || time < 1 || time > 10)
