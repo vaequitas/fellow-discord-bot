@@ -17,21 +17,6 @@ client.on('message', async message => {
 
   if (client.commands.has(command))
     return client.commands.get(command).run(message);
-
-  if (command === 'whoami') {
-    const m = `You are ${message.author}, duh!`;
-    return message.channel.send(m);
-  }
-
-  if (command === 'wait') {
-    const time = parseInt(args.shift(), 10);
-    if (!time || time < 1 || time > 10)
-      return message.reply('Please provide a time value in seconds between 1 and 10');
-
-    await new Promise(resolve => setTimeout(resolve, (time * 1000)));
-
-    return message.reply(`I waited for ${time} seconds`);
-  }
 });
 
 client.login(config.token);
