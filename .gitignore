@@ -1,3 +1,6 @@
+.bot.yml
+.config.json
+
 #### joe made this: http://goel.io/joe
 
 #### vim ####
@@ -18,8 +21,6 @@ Session.vim
 tags
 # Persistent undo
 [._]*.un~
-
-.bot.yml
 #### joe made this: http://goel.io/joe
 
 #### node ####
