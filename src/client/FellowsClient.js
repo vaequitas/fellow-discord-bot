@@ -9,7 +9,7 @@ class FellowsClient extends Client {
   }
 
   async init() {
-    const commands = await this.commands.loadFiles();
+    return await this.commands.loadFiles();
   }
 
   async login(token) {
