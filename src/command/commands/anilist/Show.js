@@ -4,8 +4,9 @@ const fetch = require('node-fetch');
 class Show extends Command {
   constructor(...args) {
     super(...args, {
-      name: 'show',
+      name: 'anime',
       description: 'Get a link to a show on anilist',
+      aliases: ['show'],
     });
   }
 
