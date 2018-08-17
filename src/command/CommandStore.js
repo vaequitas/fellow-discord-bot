@@ -3,10 +3,11 @@ const fs   = require('fs-nextra');
 const { Collection } = require('discord.js');
 
 class CommandStore extends Collection {
-  constructor() {
+  constructor(client) {
     super();
 
-    this.name = 'commands';
+    this.name     = 'commands';
+    this.client   = client;
     this.commands = {};
     this.dir      = `${path.dirname(require.main.filename)}${path.sep}src${path.sep}command${path.sep}commands`
 
@@ -42,11 +43,11 @@ class CommandStore extends Collection {
         path: file,
         name: path.parse(filepath).name
       };
-      const command = this.set(new (require(filepath))());
+      const command = this.set(new (require(filepath))(this.client));
       delete require.cache[filepath];
       return command;
     } catch (error) {
-      console.log(`Failed to load ${filepath}`);
+      console.log(`Failed to load ${filepath} due to ${error}`);
       return;
     }
   }

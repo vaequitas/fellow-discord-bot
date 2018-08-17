@@ -5,7 +5,7 @@ class FellowsClient extends Client {
   constructor(options) {
     super(options);
 
-    this.commands = new CommandStore();
+    this.commands = new CommandStore(this);
   }
 
   async init() {
