@@ -5,6 +5,7 @@ class Ping extends Command {
     super(...args, {
       name: 'ping',
       description: 'Check the bot\'s ping',
+      aliases: ['pong']
     });
   }
 
