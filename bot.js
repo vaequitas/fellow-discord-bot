@@ -41,6 +41,12 @@ client.on('message', async message => {
     const m = `You are ${message.author}, duh!`;
     return message.channel.send(m);
   }
+
+  if (command === 'profile') {
+    const user = args.shift().toLowerCase();
+    const m    = `https://anilist.co/user/${user}`
+    return message.channel.send(m);
+  }
 });
 
 client.login(config.token);
