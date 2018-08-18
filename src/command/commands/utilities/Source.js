@@ -4,7 +4,7 @@ class Source extends Command {
   constructor(...args) {
     super(...args, {
       name: 'source',
-      description: 'Provides a link to the bot source code',
+      description: 'provides a link to the bot source code',
       aliases: ['sauce'],
     });
   }
