@@ -15,7 +15,7 @@ class ViewingCommand extends Command {
   async run(message, args) {
     if (!args.length) {
       const viewing = await this.provider.getNext();
-      message.reply(`The next viewing is at ${viewing.date}`);
+      message.reply(`The next viewing is at ${new Date(viewing.date).toUTCString()}`);
     }
   }
 }
