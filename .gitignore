@@ -1,5 +1,6 @@
 .bot.yml
 .config.json
+*.pem
 
 #### joe made this: http://goel.io/joe
 
