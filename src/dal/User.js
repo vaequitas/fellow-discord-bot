@@ -16,6 +16,10 @@ class UserDal {
       return this.getUser(userId);
     });
   }
+
+  async modifyUser(userId, config) {
+    return await this.database.ref('/users/' + userId).update(config)
+  }
 }
 
 module.exports = UserDal;

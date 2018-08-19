@@ -12,6 +12,10 @@ class UserProvider {
 
     return await this.dal.createUser(userId);
   }
+
+  async modifyUser(userId, config) {
+    return await this.dal.modifyUser(userId, config);
+  }
 }
 
 module.exports = UserProvider;
