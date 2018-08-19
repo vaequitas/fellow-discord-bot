@@ -6,7 +6,7 @@ class Profile extends Command {
   constructor(...args) {
     super(...args, {
       name: 'profile',
-      description: 'searches for an anilist user',
+      description: 'search or manage anilist profiles linked to users',
       usages: ['profile', 'profile search username', 'profile @discord_username', 'profile set anilist_profile_url'],
       long_description: 'This command queries the AniList API to try and find the best matched user for the provided username',
       aliases: ['stalk']
@@ -15,12 +15,20 @@ class Profile extends Command {
   }
 
   async run(message, args) {
+    let userId = null;
     if (!args.length) {
-      const user = await this.user.getUser('188385961200189441');
-      const profile = user.profile;
-      //const profile = await this.user.getUser(message.author.id).profile;
+      userId = message.author.id;
+    } else if (args[0] === 'get') {
+      userId = args[1].match(/<@(\d+)>/)[1];
+    } else if (args[0] && args[0].match(/<@(\d+)>/) && args[0].match(/<@(\d+)>/).length) {
+      userId = args[0].match(/<@(\d+)>/)[1];
+    }
 
-      return message.reply(`Your profile is ${profile}`);
+    if (userId) {
+      const profile = await this.getProfile(userId);
+      if (!profile)
+        return message.reply(`Couldn't find a profile for <@${userId}>`);
+      return message.channel.send(`Found the following profile for <@${userId}>: ${profile}`);
     }
 
     if (args[0] == 'set') {
@@ -28,24 +36,6 @@ class Profile extends Command {
         return message.reply('Sorry, that doesn\'t look like an anilist profile.');
       const user = await this.user.modifyUser(message.author.id, {profile: args[1]});
       return message.reply(`set your profile.`);
-    }
-
-    const match = args[0].match(/<@(\d+)>/);
-    if (match) {
-      const userId = match[1];
-      const user = await this.user.getUser(userId);
-      const profile = user.profile;
-      const m = `<@${userId}>'s profile is ${profile}`;
-      return message.channel.send(m);
-    }
-
-    if (args[0] == 'get') {
-      const userId = args[1].match(/<@(\d+)>/)
-      const user = await this.user.getUser(userId[1]);
-      const profile = user.profile;
-      //const profile = await this.user.getUser(message.author.id).profile;
-
-      return message.channel.send(`<@${userId[1]}>'s profile is ${profile}`);
     }
 
     if (args[0] !== 'search')
@@ -96,6 +86,12 @@ class Profile extends Command {
     function handleError(error) {
       console.error('Error searching for user', error);
     }
+  }
+
+  async getProfile(userId) {
+    const user = await this.user.getUser(userId);
+    const profile = user.profile;
+    return profile;
   }
 }
 
