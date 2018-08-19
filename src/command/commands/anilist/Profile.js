@@ -17,12 +17,13 @@ class Profile extends Command {
 
   async run(message, args) {
     let userId = null;
+    const userIdRegex = /<@!?(\d+)>/;
     if (!args.length) {
       userId = message.author.id;
     } else if (args[0] === 'get') {
-      userId = args[1].match(/<@(\d+)>/)[1];
-    } else if (args[0] && args[0].match(/<@(\d+)>/) && args[0].match(/<@(\d+)>/).length) {
-      userId = args[0].match(/<@(\d+)>/)[1];
+      userId = args[1].match(userIdRegex)[1];
+    } else if (args[0] && args[0].match(userIdRegex) && args[0].match(userIdRegex).length) {
+      userId = args[0].match(userIdRegex)[1];
     }
 
     if (userId) {
