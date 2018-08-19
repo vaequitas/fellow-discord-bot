@@ -6,6 +6,7 @@ class UserCommand extends Command {
     super(...args, {
       name: 'user',
       description: 'test command retrieve user from firebase',
+      enabled: false,
     });
 
     this.provider = new UserProvider(this.client.firebase.database());

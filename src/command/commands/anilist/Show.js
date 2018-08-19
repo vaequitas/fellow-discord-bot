@@ -9,6 +9,7 @@ class Show extends Command {
       usage: 'anime show_title',
       long_description: 'This command queries the AniList API to try and find the best matched anime for your show title',
       aliases: ['show'],
+      enabled: true,
     });
   }
 

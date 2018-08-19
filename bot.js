@@ -1,6 +1,6 @@
 const config = require('./.config.json');
 
-const client = new (require('./src/client/FellowsClient.js'))();
+const client = new (require('./src/client/FellowsClient.js'))({}, config.dev);
 
 client.on('ready', () => {
   console.log(`Bot has started with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds`);

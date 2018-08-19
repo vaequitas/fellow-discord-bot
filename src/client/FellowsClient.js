@@ -5,8 +5,10 @@ const admin = require('firebase-admin');
 var serviceAccount = require("../../fellows-discord-bot-firebase-adminsdk-kriks-628e35a1d2.json");
 
 class FellowsClient extends Client {
-  constructor(options) {
+  constructor(options, dev_mode) {
     super(options);
+
+    this.dev_mode = dev_mode || false;
 
     this.commands = new CommandStore(this);
 

@@ -6,6 +6,7 @@ class Source extends Command {
       name: 'source',
       description: 'provides a link to the bot source code',
       aliases: ['sauce'],
+      enabled: true,
     });
   }
 

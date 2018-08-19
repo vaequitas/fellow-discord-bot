@@ -6,6 +6,7 @@ class Command {
     this.description = options.description || null;
     this.long_description = options.long_description || null;
     this.usage = options.usage || (options.usages && options.usages.join('\n  ')) || options.name;
+    this.enabled = options.enabled || false;
   }
 
   getHelp() {

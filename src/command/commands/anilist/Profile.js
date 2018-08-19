@@ -9,7 +9,8 @@ class Profile extends Command {
       description: 'search or manage anilist profiles linked to users',
       usages: ['profile', 'profile search username', 'profile @discord_username', 'profile set anilist_profile_url'],
       long_description: 'This command queries the AniList API to try and find the best matched user for the provided username',
-      aliases: ['stalk']
+      aliases: ['stalk'],
+      enabled: true,
     });
     this.user = new UserProvider(this.client.firebase.database());
   }

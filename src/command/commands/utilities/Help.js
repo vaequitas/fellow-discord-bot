@@ -7,6 +7,7 @@ class Help extends Command {
       description: 'display help information for a command',
       usage: 'help [command]',
       aliases: ['h', 'halp'],
+      enabled: true,
     });
   }
 
