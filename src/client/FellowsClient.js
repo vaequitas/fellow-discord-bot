@@ -2,7 +2,7 @@ const { Client } = require('discord.js');
 const CommandStore = require('../command/CommandStore.js');
 const firebase = require('firebase');
 const admin = require('firebase-admin');
-var serviceAccount = require("../../fellows-discord-bot-firebase-adminsdk-kriks-628e35a1d2.json");
+var serviceAccount = require("../../firebase.json");
 
 class FellowsClient extends Client {
   constructor(options, dev_mode) {
