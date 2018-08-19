@@ -13,7 +13,7 @@ class Help extends Command {
   async run(message, args) {
     const command = args[0];
     if (!command)
-      return message.channel.send(`Available commands: ${this.getCommandsString()}`);
+      return message.channel.send(this.getHelp());
 
     if (this.client.commands.has(command))
       return message.channel.send(`${this.client.commands.get(command).getHelp()}`);
@@ -22,9 +22,13 @@ class Help extends Command {
   }
 
   getCommandsString() {
-    return `${[...this.client.commands.keys()].join(', ')}`;
+    return `\n - ${[...this.client.commands.keys()].join('\n - ')}`;
   }
 
+  getHelp() {
+    this.long_description = `shows help for a command - available commands: ${this.getCommandsString()}`;
+    return super.getHelp();
+  }
 }
 
 module.exports = Help;
