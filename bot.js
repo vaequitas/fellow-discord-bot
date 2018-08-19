@@ -1,6 +1,14 @@
+const firebase = require('firebase');
+const admin = require('firebase-admin');
 const config = require('./.config.json');
+const serviceAccount = require("./firebase.json");
 
-const client = new (require('./src/client/FellowsClient.js'))({}, config.dev);
+const firebase_conn = admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+  databaseURL: config.database.url
+});
+
+const client = new (require('./src/client/FellowsClient.js'))({}, config.dev, firebase_conn);
 
 client.on('ready', () => {
   console.log(`Bot has started with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds`);

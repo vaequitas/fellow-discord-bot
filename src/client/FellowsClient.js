@@ -1,21 +1,15 @@
 const { Client } = require('discord.js');
 const CommandStore = require('../command/CommandStore.js');
-const firebase = require('firebase');
-const admin = require('firebase-admin');
-var serviceAccount = require("../../firebase.json");
 
 class FellowsClient extends Client {
-  constructor(options, dev_mode) {
+  constructor(options, dev_mode, firebase) {
     super(options);
 
     this.dev_mode = dev_mode || false;
 
     this.commands = new CommandStore(this);
 
-    this.firebase = admin.initializeApp({
-      credential: admin.credential.cert(serviceAccount),
-      databaseURL: "https://fellows-discord-bot.firebaseio.com"
-    });
+    this.firebase = firebase;
   }
 
   async init() {
