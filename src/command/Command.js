@@ -10,16 +10,16 @@ class Command {
 
   getHelp() {
     return `
-    \`\`\`
-    ${this.name}
+\`\`\`
+${this.name}
 
-    usage:
-      ${this.usage}
+usage:
+  ${this.usage}
 
-    ${this.description.length ? `description: ${this.description}` : ''}
-    ${this.aliases.length ?     `aliases:     ${this.aliases.join(', ')}` : ''}
-    ${this.long_description ? `\n\n    ${this.long_description}` : ''}
-    \`\`\`
+${this.description.length ? `description: ${this.description}` : ''}
+${this.aliases.length ?     `aliases:     ${this.aliases.join(', ')}` : ''}
+${this.long_description ? `\n\n${this.long_description}` : ''}
+\`\`\`
     `;
   }
 }
