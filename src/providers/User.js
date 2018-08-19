@@ -6,11 +6,7 @@ class UserProvider {
   }
 
   async getUser(userId) {
-    const user = await this.dal.getUser(userId);
-
-    if (user) return user;
-
-    return await this.dal.createUser(userId);
+    return await this.dal.getUser(userId);
   }
 
   async modifyUser(userId, config) {

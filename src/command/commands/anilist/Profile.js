@@ -91,8 +91,9 @@ class Profile extends Command {
 
   async getProfile(userId) {
     const user = await this.user.getUser(userId);
-    const profile = user.profile;
-    return profile;
+    if (!user || !user.profile.length) return;
+
+    return user.profile;
   }
 }
 
