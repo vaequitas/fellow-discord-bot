@@ -5,7 +5,7 @@ class Command {
     this.aliases = options.aliases || [];
     this.description = options.description || null;
     this.long_description = options.long_description || null;
-    this.usage = options.usage || options.name;
+    this.usage = options.usage || (options.usages && options.usages.join('\n  ')) || options.name;
   }
 
   getHelp() {
