@@ -28,7 +28,7 @@ class Profile extends Command {
     if (userId) {
       const profile = await this.getProfile(userId);
       if (!profile)
-        return message.reply(`Couldn't find a profile for <@${userId}>`);
+        return message.channel.send(`<@${userId}> has not linked their profile`);
       return message.channel.send(`Found the following profile for <@${userId}>: ${profile}`);
     }
 
