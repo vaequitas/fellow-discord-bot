@@ -20,10 +20,9 @@ class Profile extends Command {
     const userIdRegex = /<@!?(\d+)>/;
     if (!args.length) {
       userId = message.author.id;
-    } else if (args[0] === 'get') {
-      userId = args[1].match(userIdRegex)[1];
-    } else if (args[0] && args[0].match(userIdRegex) && args[0].match(userIdRegex).length) {
-      userId = args[0].match(userIdRegex)[1];
+    } else if (args[0] && (args[0] === 'get' || args[0].match(userIdRegex))) {
+      const member = message.mentions.members.first();
+      userId = member.id;
     }
 
     if (userId) {
