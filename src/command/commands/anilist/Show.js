@@ -1,5 +1,5 @@
 const Command = require('../../Command.js');
-const fetch = require('node-fetch');
+const ShowProvider = require('../../../providers/Show.js');
 
 class Show extends Command {
   constructor(...args) {
@@ -11,59 +11,23 @@ class Show extends Command {
       aliases: ['show'],
       enabled: true,
     });
+
+    this.showProvider = new ShowProvider();
   }
 
   async run(message, args) {
-    var query = `
-    query ($search: String) {
-      Media (search: $search, type: ANIME) {
-        id
-        title {
-          romaji
-          english
-          native
-        }
-        siteUrl
-      }
-    }
-    `;
+    if (!args.length)
+      return message.channel.send(this.getHelp());
 
-    var variables = {
-        search: args.join(' ')
-    };
+    const searchTerm = args.join(' ');
+    const media = await this.showProvider.searchSingle(searchTerm);
 
-    var url = 'https://graphql.anilist.co',
-        options = {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json',
-            },
-            body: JSON.stringify({
-                query: query,
-                variables: variables
-            })
-        };
-
-    fetch(url, options).then(handleResponse)
-                       .then(handleData)
-                       .catch(handleError);
-
-    function handleResponse(response) {
-      return response.json().then(json => {
-        return response.ok ? json : Promise.reject(json);
-      });
-    }
-
-    function handleData(data) {
-      const media = data.data.Media;
+    if (media) {
       const m = `I found the show ${media.title.romaji}: ${media.siteUrl}`;
       return message.reply(m);
     }
 
-    function handleError(error) {
-      console.error('Error searching for show', error);
-    }
+    return message.reply(`I didn't find any shows for ${searchTerm}`)
   }
 }
 
