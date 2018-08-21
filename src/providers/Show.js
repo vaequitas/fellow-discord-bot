@@ -25,10 +25,46 @@ class ShowProvider {
     return data.Media;
   }
 
-  async getRandomSearch(searchTerm, sort) {
-    const data = await this.searchMultiple(searchTerm, sort);
+  async getRandomTop(limit) {
+    const data = await this.getSortedShows('SCORE_DESC', limit);
     const media = data[Math.floor(Math.random()*data.length)];
     return media
+  }
+
+  async getSortedShows(sort, limit) {
+    const queryTemplate = `
+    query ($id: Int, $page: Int, $perPage: Int, $sort: [MediaSort]) {
+      Page (page: $page, perPage: $perPage) {
+        pageInfo {
+          total
+          currentPage
+          lastPage
+          hasNextPage
+          perPage
+        }
+        media (id: $id, sort: $sort) {
+          id
+          siteUrl
+          title {
+            romaji
+          }
+        }
+      }
+    }
+    `;
+
+    const variables = {
+      sort: sort,
+      page: 1,
+      perPage: limit
+    };
+
+    const query = await this.buildQuery(queryTemplate, variables);
+    const data = await this.queryApi(query);
+    if (!data.Page || !data.Page.media.length)
+      return
+
+    return data.Page.media;
   }
 
   async searchMultiple(searchTerm, limit) {
