@@ -27,12 +27,16 @@ class ShowProvider {
 
   async getRandomTop(limit) {
     const data = await this.getSortedShows('SCORE_DESC', limit);
+    if (!data)
+      return
     const media = data[Math.floor(Math.random()*data.length)];
     return media;
   }
 
   async getRandomFirstTop(limit) {
     const data = await this.getSortedShows('SCORE_DESC', limit);
+    if (!data)
+      return;
     const firstData = this.filterSequels(data);
     const media = firstData[Math.floor(Math.random()*firstData.length)];
     return media;
@@ -51,25 +55,29 @@ class ShowProvider {
 
   async getRandomTopGenre(limit, genre) {
     const data = await this.getSortedShows('SCORE_DESC', limit, genre);
+    if (!data)
+      return;
     const media = data[Math.floor(Math.random()*data.length)];
     return media;
   }
 
-  async getRandomFirstTopGenre(limit, genre) {
-    const data = await this.getSortedShows('SCORE_DESC', limit, genre);
+  async getRandomFirstTopGenre(limit, opts) {
+    const data = await this.getSortedShows('SCORE_DESC', limit, opts);
+    if (!data)
+      return;
     const firstData = this.filterSequels(data);
     const media = firstData[Math.floor(Math.random()*firstData.length)];
     return media;
   }
 
-  async getSortedShows(sort, limit, genre) {
+  async getSortedShows(sort, limit, opts) {
     const queryTemplate = `
-    query ($page: Int, $perPage: Int, $sort: [MediaSort], $genre: String) {
+    query ($page: Int, $perPage: Int, $sort: [MediaSort], $genre: String, $tag_in: [String]) {
       Page (page: $page, perPage: $perPage) {
         pageInfo {
           total
         }
-        media (sort: $sort, genre: $genre, status: FINISHED, type: ANIME) {
+        media (sort: $sort, genre: $genre, status: FINISHED, type: ANIME, tag_in: $tag_in) {
           averageScore
           siteUrl
           relations {
@@ -91,8 +99,11 @@ class ShowProvider {
       perPage: limit,
     };
 
-    if (genre && genre.length)
-      variables.genre = genre
+    if (opts.genre && opts.genre.length)
+      variables.genre = opts.genre
+
+    if (opts.tag && opts.tag.length)
+      variables.tag_in = opts.tag
 
     const query = await this.buildQuery(queryTemplate, variables);
     const data = await this.queryApi(query);
