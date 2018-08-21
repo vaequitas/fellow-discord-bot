@@ -7,9 +7,9 @@ class Recommend extends Command {
       name: 'recommend',
       description: 'recommends you an anime',
       usages: ['recommend', 'recommend genre'],
-      long_description: 'This command will recommend you an anime',
+      long_description: 'This command will recommend you an anime, optionally filtered by genre',
       aliases: ['gief'],
-      enabled: false,
+      enabled: true,
     });
 
     this.showProvider = new ShowProvider();
