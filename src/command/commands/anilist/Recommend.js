@@ -6,7 +6,7 @@ class Recommend extends Command {
     super(...args, {
       name: 'recommend',
       description: 'recommends you an anime',
-      usage: 'recommend',
+      usages: ['recommend', 'recommend genre'],
       long_description: 'This command will recommend you an anime',
       aliases: ['gief'],
       enabled: false,
@@ -16,7 +16,13 @@ class Recommend extends Command {
   }
 
   async run(message, args) {
-    const recommendation = await this.showProvider.getRandomTop(25);
+    if (args.length) {
+      const recommendation = await this.showProvider.getRandomTopGenre(30, args[0])
+      const m = `I recommend ${recommendation.title.romaji}, with average score ${recommendation.averageScore}%: ${recommendation.siteUrl}`;
+      return message.reply(m);
+    }
+
+    const recommendation = await this.showProvider.getRandomTop(50);
     if (!recommendation)
       return message.reply('i failed to find a show owo');
 

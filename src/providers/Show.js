@@ -28,22 +28,24 @@ class ShowProvider {
   async getRandomTop(limit) {
     const data = await this.getSortedShows('SCORE_DESC', limit);
     const media = data[Math.floor(Math.random()*data.length)];
-    return media
+    return media;
   }
 
-  async getSortedShows(sort, limit) {
+  async getRandomTopGenre(limit, genre) {
+    const data = await this.getSortedShows('SCORE_DESC', limit, genre);
+    const media = data[Math.floor(Math.random()*data.length)];
+    return media;
+  }
+
+  async getSortedShows(sort, limit, genre) {
     const queryTemplate = `
-    query ($id: Int, $page: Int, $perPage: Int, $sort: [MediaSort]) {
+    query ($page: Int, $perPage: Int, $sort: [MediaSort], $genre: String) {
       Page (page: $page, perPage: $perPage) {
         pageInfo {
           total
-          currentPage
-          lastPage
-          hasNextPage
-          perPage
         }
-        media (id: $id, sort: $sort) {
-          id
+        media (sort: $sort, genre: $genre) {
+          averageScore
           siteUrl
           title {
             romaji
@@ -53,11 +55,14 @@ class ShowProvider {
     }
     `;
 
-    const variables = {
+    let variables = {
       sort: sort,
       page: 1,
       perPage: limit
     };
+
+    if (genre && genre.length)
+      variables.genre = genre
 
     const query = await this.buildQuery(queryTemplate, variables);
     const data = await this.queryApi(query);
@@ -73,13 +78,9 @@ class ShowProvider {
       Page (page: $page, perPage: $perPage) {
         pageInfo {
           total
-          currentPage
-          lastPage
-          hasNextPage
-          perPage
         }
         media (id: $id, search: $search) {
-          id
+          averageScore
           siteUrl
           title {
             romaji
@@ -123,7 +124,7 @@ class ShowProvider {
 
     const response = await fetch(url, options);
     if(!response.ok)
-      Promise.reject(responseJson);
+      Promise.reject(response);
 
     const responseJson = await response.json();
     return responseJson.data;
