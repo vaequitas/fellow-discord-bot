@@ -2,7 +2,7 @@ const fetch = require('node-fetch');
 
 class ShowProvider {
   async searchSingle(searchTerm) {
-    var query = `
+    const queryTemplate = `
     query ($search: String) {
       Media (search: $search, type: ANIME) {
         id
@@ -16,10 +16,23 @@ class ShowProvider {
     }
     `;
 
-    var variables = {
+    const variables = {
         search: searchTerm
     };
 
+    const query = await this.buildQuery(queryTemplate, variables);
+    const data = await this.queryApi(query);
+    return data.Media;
+  }
+
+  async buildQuery(query, variables) {
+    return JSON.stringify({
+      query: query,
+      variables: variables
+    });
+  }
+
+  async queryApi(query) {
     var url = 'https://graphql.anilist.co',
         options = {
             method: 'POST',
@@ -27,10 +40,7 @@ class ShowProvider {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json',
             },
-            body: JSON.stringify({
-                query: query,
-                variables: variables
-            })
+            body: query
         };
 
     const response = await fetch(url, options);
@@ -38,8 +48,8 @@ class ShowProvider {
     if(!responseJson.ok)
       Promise.reject(responseJson);
 
-    const media = responseJson.data.Media;
-    return media;
+    console.log(responseJson);
+    return responseJson.data;
   }
 }
 
