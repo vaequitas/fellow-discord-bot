@@ -70,7 +70,7 @@ class ShowProvider {
     return media;
   }
 
-  async getSortedShows(sort, limit, opts) {
+  async getSortedShows(sort, limit, opts = {}) {
     const queryTemplate = `
     query ($page: Int, $perPage: Int, $sort: [MediaSort], $genre: String, $tag_in: [String]) {
       Page (page: $page, perPage: $perPage) {
