@@ -122,10 +122,10 @@ class ShowProvider {
         };
 
     const response = await fetch(url, options);
-    const responseJson = await response.json();
-    if(!responseJson.ok)
+    if(!response.ok)
       Promise.reject(responseJson);
 
+    const responseJson = await response.json();
     return responseJson.data;
   }
 }

@@ -16,7 +16,7 @@ class Recommend extends Command {
   }
 
   async run(message, args) {
-    const recommendation = await this.showProvider.getRandomTop();
+    const recommendation = await this.showProvider.getRandomTop(25);
     if (!recommendation)
       return message.reply('i failed to find a show owo');
 
