@@ -2,6 +2,8 @@
 
 A discord bot for the AniFellows discord server
 
+The code in this repository is horribly hacky and by no means an example of good code.
+
 =
 
 To run this bot, you need to create a JSON file at the top-level of this repo called .config.json with contents
