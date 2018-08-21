@@ -31,9 +31,34 @@ class ShowProvider {
     return media;
   }
 
+  async getRandomFirstTop(limit) {
+    const data = await this.getSortedShows('SCORE_DESC', limit);
+    const firstData = this.filterSequels(data);
+    const media = firstData[Math.floor(Math.random()*firstData.length)];
+    return media;
+  }
+
+  filterSequels(data) {
+    return data.filter(media => {
+      if (!media.relations.edges.length)
+        return true
+
+      return !media.relations.edges.some(relation => {
+        return (['PREQUEL', 'PARENT'].includes(relation.relationType))
+      })
+    });
+  }
+
   async getRandomTopGenre(limit, genre) {
     const data = await this.getSortedShows('SCORE_DESC', limit, genre);
     const media = data[Math.floor(Math.random()*data.length)];
+    return media;
+  }
+
+  async getRandomFirstTopGenre(limit, genre) {
+    const data = await this.getSortedShows('SCORE_DESC', limit, genre);
+    const firstData = this.filterSequels(data);
+    const media = firstData[Math.floor(Math.random()*firstData.length)];
     return media;
   }
 
@@ -44,9 +69,14 @@ class ShowProvider {
         pageInfo {
           total
         }
-        media (sort: $sort, genre: $genre) {
+        media (sort: $sort, genre: $genre, status: FINISHED, type: ANIME) {
           averageScore
           siteUrl
+          relations {
+            edges {
+              relationType
+            }
+          }
           title {
             romaji
           }
@@ -58,7 +88,7 @@ class ShowProvider {
     let variables = {
       sort: sort,
       page: 1,
-      perPage: limit
+      perPage: limit,
     };
 
     if (genre && genre.length)

@@ -16,17 +16,17 @@ class Recommend extends Command {
   }
 
   async run(message, args) {
+    let recommendation = null;
     if (args.length) {
-      const recommendation = await this.showProvider.getRandomTopGenre(30, args[0])
-      const m = `I recommend ${recommendation.title.romaji}, with average score ${recommendation.averageScore}%: ${recommendation.siteUrl}`;
-      return message.reply(m);
+      recommendation = await this.showProvider.getRandomFirstTopGenre(50, args[0])
+    } else {
+      recommendation = await this.showProvider.getRandomFirstTop(50);
     }
 
-    const recommendation = await this.showProvider.getRandomTop(50);
     if (!recommendation)
       return message.reply('i failed to find a show owo');
 
-    const m = `I recommend ${recommendation.title.romaji}: ${recommendation.siteUrl}`;
+    const m = `I recommend ${recommendation.title.romaji}, with average score ${recommendation.averageScore}%: ${recommendation.siteUrl}`;
     return message.reply(m);
   }
 }
