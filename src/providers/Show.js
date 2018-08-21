@@ -25,6 +25,48 @@ class ShowProvider {
     return data.Media;
   }
 
+  async getRandomSearch(searchTerm, sort) {
+    const data = await this.searchMultiple(searchTerm, sort);
+    const media = data[Math.floor(Math.random()*data.length)];
+    return media
+  }
+
+  async searchMultiple(searchTerm, limit) {
+    const queryTemplate = `
+    query ($id: Int, $page: Int, $perPage: Int, $search: String) {
+      Page (page: $page, perPage: $perPage) {
+        pageInfo {
+          total
+          currentPage
+          lastPage
+          hasNextPage
+          perPage
+        }
+        media (id: $id, search: $search) {
+          id
+          siteUrl
+          title {
+            romaji
+          }
+        }
+      }
+    }
+    `;
+
+    const variables = {
+      search: searchTerm,
+      page: 1,
+      perPage: limit
+    };
+
+    const query = await this.buildQuery(queryTemplate, variables);
+    const data = await this.queryApi(query);
+    if (!data.Page || !data.Page.media.length)
+      return
+
+    return data.Page.media;
+  }
+
   async buildQuery(query, variables) {
     return JSON.stringify({
       query: query,
@@ -48,7 +90,6 @@ class ShowProvider {
     if(!responseJson.ok)
       Promise.reject(responseJson);
 
-    console.log(responseJson);
     return responseJson.data;
   }
 }
