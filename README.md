@@ -1,6 +1,6 @@
 # fellow-discord-bot
 
-A discord bot for the AniFellows discord server
+A discord bot for the anifriends discord server
 
 The code in this repository is horribly hacky and by no means an example of good code.
 
