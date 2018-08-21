@@ -4,6 +4,8 @@ A discord bot for the AniFellows discord server
 
 The code in this repository is horribly hacky and by no means an example of good code.
 
+Feel free to put in a pull request, even if it's just to add new ideas to IDEAS.md - everything is welcome.
+
 ### Setup
 
 To run this bot, you need to create a JSON file at the top-level of this repo called .config.json with contents
