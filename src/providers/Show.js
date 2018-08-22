@@ -72,12 +72,12 @@ class ShowProvider {
 
   async getSortedShows(sort, limit, opts = {}) {
     const queryTemplate = `
-    query ($page: Int, $perPage: Int, $sort: [MediaSort], $genre: String, $tag_in: [String]) {
+    query ($page: Int, $perPage: Int, $sort: [MediaSort], $genre_in: [String], $tag_in: [String]) {
       Page (page: $page, perPage: $perPage) {
         pageInfo {
           total
         }
-        media (sort: $sort, genre: $genre, status: FINISHED, type: ANIME, tag_in: $tag_in) {
+        media (sort: $sort, genre_in: $genre_in, status: FINISHED, type: ANIME, tag_in: $tag_in) {
           averageScore
           siteUrl
           relations {
@@ -100,7 +100,7 @@ class ShowProvider {
     };
 
     if (opts.genre && opts.genre.length)
-      variables.genre = opts.genre
+      variables.genre_in = opts.genre
 
     if (opts.tag && opts.tag.length)
       variables.tag_in = opts.tag

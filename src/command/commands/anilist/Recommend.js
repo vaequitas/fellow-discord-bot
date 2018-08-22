@@ -7,7 +7,7 @@ class Recommend extends Command {
     super(...args, {
       name: 'recommend',
       description: 'recommends you an anime',
-      usages: ['recommend', 'recommend [-g|--genre genre]', 'recommend [-t|--tag tag]...'],
+      usages: ['recommend', 'recommend [-g|--genre genre]...', 'recommend [-t|--tag tag]...'],
       long_description: 'This command will recommend you an anime, optionally filtered by genre or tags. You can specify multiple tags by repeating -t',
       aliases: ['gief'],
       enabled: true,
@@ -21,7 +21,7 @@ class Recommend extends Command {
     if (args.length) {
       var result = options.parse({
           tag:   { short: 't', multi: true  },
-          genre: { short: 'g'  },
+          genre: { short: 'g', multi: true },
       }, args);
       if (Object.keys(result.opt).length === 0)
         return message.reply(this.getHelp());
