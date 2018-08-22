@@ -29,7 +29,7 @@ class Recommend extends Command {
 
       let limit = 50;
       if (result.opt.tag && result.opt.tag.length)
-        limit = 20
+        limit = 50
 
       recommendation = await this.showProvider.getRandomFirstTopGenre(limit, result.opt)
     } else {

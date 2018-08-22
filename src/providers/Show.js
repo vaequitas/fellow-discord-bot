@@ -37,7 +37,8 @@ class ShowProvider {
     const data = await this.getSortedShows('SCORE_DESC', limit);
     if (!data)
       return;
-    const firstData = this.filterSequels(data);
+    //const firstData = this.filterSequels(data);
+    const firstData = data;
     const media = firstData[Math.floor(Math.random()*firstData.length)];
     return media;
   }
@@ -65,7 +66,8 @@ class ShowProvider {
     const data = await this.getSortedShows('SCORE_DESC', limit, opts);
     if (!data)
       return;
-    const firstData = this.filterSequels(data);
+    //const firstData = this.filterSequels(data);
+    const firstData = data;
     const media = firstData[Math.floor(Math.random()*firstData.length)];
     return media;
   }
