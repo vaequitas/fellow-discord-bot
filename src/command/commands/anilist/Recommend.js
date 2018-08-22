@@ -17,12 +17,13 @@ class Recommend extends Command {
   }
 
   async run(message, args) {
+    const joined_args = args.join(' ');
     let recommendation = null;
     if (args.length) {
       var result = options.parse({
           tag:   { short: 't', multi: true  },
           genre: { short: 'g', multi: true },
-      }, args);
+      }, joined_args);
       if (Object.keys(result.opt).length === 0)
         return message.reply(this.getHelp());
 
