@@ -2,6 +2,7 @@ const firebase = require('firebase');
 const admin = require('firebase-admin');
 const config = require('./.config.json');
 const serviceAccount = require("./firebase.json");
+const { version  } = require('./package.json');
 
 const firebase_conn = admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -11,6 +12,7 @@ const firebase_conn = admin.initializeApp({
 const client = new (require('./src/client/FellowsClient.js'))({}, config.dev, firebase_conn);
 
 client.on('ready', () => {
+  console.log(`---------- ANIFRIENDS BOT v${version} ----------`);
   console.log(`Bot has started with ${client.users.size} users, in ${client.channels.size} channels of ${client.guilds.size} guilds`);
   client.user.setActivity(config.activity);
 });
