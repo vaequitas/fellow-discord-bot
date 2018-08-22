@@ -2,7 +2,7 @@
 
 ## Features
 
-### Suggestions command
+### Suggestions command (IN PROGRESS)
 This command will suggest an anime to the user.
 
 This can take optional paramters such as genre which will refine the search.
@@ -15,6 +15,9 @@ Optionally support manga
 Manage/view viewings
 
 Make suggestion to viewing through subcommand
+
+### Info commands
+Returns info like version, where to report issues, source, etc.
 
 ## Stability
 
