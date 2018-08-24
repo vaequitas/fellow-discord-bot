@@ -6,9 +6,9 @@ class Spoiler extends Command {
     super(...args, {
       name: 'spoiler',
       description: 'spoil something',
-      usages: ['spoiler', 'spoiler :spoiler tag; spoiler text', 'spoiler spoiler text'],
-      long_description: 'This is a POC',
-      aliases: ['spoil'],
+      usages: ['spoiler', 'spoiler :spoiler tag; this is a spoiler', 'spoiler this is a spoiler'],
+      long_description: 'This is a PoC',
+      aliases: ['spoil', 's'],
       enabled: true,
     });
 
@@ -38,7 +38,6 @@ class Spoiler extends Command {
 
     const full_message = args.join(' ').trim();
     let tag = ''
-    console.log(full_message.indexOf(':'));
     if (full_message.indexOf(':') === 0) {
       const spoiler_tag_start = 0;
       const spoiler_tag_stop  = full_message.indexOf(';')
