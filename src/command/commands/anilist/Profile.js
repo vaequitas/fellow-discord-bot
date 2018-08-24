@@ -1,35 +1,38 @@
 const Command = require('../../Command.js');
+const CommandStore = require('../../CommandStore.js');
 const fetch = require('node-fetch');
 const UserProvider = require('../../../providers/User.js');
+const path = require('path');
 
 class Profile extends Command {
   constructor(...args) {
     super(...args, {
       name: 'profile',
       description: 'search or manage anilist profiles linked to users',
-      usages: ['profile', 'profile search username', 'profile @discord_username', 'profile set anilist_profile_url'],
-      long_description: 'This command queries the AniList API to try and find the best matched user for the provided username',
+      usages: ['profile', 'profile get [@discord_username]', 'profile search [username]', 'profile set [anilist_profile_url]'],
+      long_description: [
+        'Manage/view AniList profiles of other discord users and yourself.',
+        'Set your own profile URL using `profile set https://anilist.co/user/YOUR_USER`.',
+        'View other people\'s profiles by using `profile get @test_user` (the get is optional)',
+        'Search for a user on AniList via `profile search test_username`',
+      ].join('\n'),
       aliases: ['stalk'],
       enabled: true,
     });
+
     this.user = new UserProvider(this.client.firebase.database());
+
+    this.subcommands = new CommandStore(this.client, {
+      dir: `${path.dirname(require.main.filename)}${path.sep}src${path.sep}command${path.sep}commands${path.sep}anilist${path.sep}profile`,
+      parent: this.name
+    });
+    this.subcommands.loadFiles();
   }
 
   async run(message, args) {
-    let userId = null;
-    const userIdRegex = /<@!?(\d+)>/;
-    if (!args.length) {
-      userId = message.author.id;
-    } else if (args[0] && (args[0] === 'get' || args[0].match(userIdRegex))) {
-      const member = message.mentions.members.first();
-      userId = member.id;
-    }
-
-    if (userId) {
-      const profile = await this.getProfile(userId);
-      if (!profile)
-        return message.channel.send(`<@${userId}> has not linked their profile`);
-      return message.channel.send(`Found the following profile for <@${userId}>: ${profile}`);
+    if (args.length && this.subcommands.has(args[0])) {
+      const command = args.shift().toLowerCase();
+      return await this.subcommands.get(command).run(message, args)
     }
 
     if (args[0] == 'set') {
@@ -87,13 +90,6 @@ class Profile extends Command {
     function handleError(error) {
       console.error('Error searching for user', error);
     }
-  }
-
-  async getProfile(userId) {
-    const user = await this.user.getUser(userId);
-    if (!user || !user.profile.length) return;
-
-    return user.profile;
   }
 }
 
