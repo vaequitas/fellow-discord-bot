@@ -1,5 +1,6 @@
 class Command {
   constructor(client, options = {}) {
+    this.parent = options.parent || null;
     this.client = client;
     this.name   = options.name;
     this.aliases = options.aliases || [];
