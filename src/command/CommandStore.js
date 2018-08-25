@@ -3,18 +3,22 @@ const fs   = require('fs-nextra');
 const { Collection } = require('discord.js');
 
 class CommandStore extends Collection {
-  constructor(client) {
+  constructor(client, opts) {
     super();
 
     this.name     = 'commands';
     this.client   = client;
     this.commands = {};
-    this.dir      = `${path.dirname(require.main.filename)}${path.sep}src${path.sep}command${path.sep}commands`
+    this.dir      = opts.dir;
+    this.parent   = opts.parent || null;
 
     this.aliases = new Collection();
   }
 
   set(command) {
+    if (command.parent && command.parent != this.parent)
+      return
+
     const exists = this.get(command.name);
     if (exists) this.delete(command.name);
     super.set(command.name, command);
