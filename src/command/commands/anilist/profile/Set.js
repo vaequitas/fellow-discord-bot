@@ -15,8 +15,8 @@ class Set extends Command {
     if (!args.length)
       return message.reply('you need to give me a profile link to set!');
 
-    const profile = args.shift();
-    if (!profile.match(/https:\/\/anilist.co\/user\/.*/))
+    const profile = args.shift().trim();
+    if (!profile.match(/^https:\/\/anilist.co\/user\/[^\/]+\/?$/))
       return message.reply('that doesn\'t look like an anilist profile link.');
 
     const userId = message.author.id;
