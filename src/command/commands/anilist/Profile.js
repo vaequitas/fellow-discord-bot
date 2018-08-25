@@ -43,7 +43,7 @@ class Profile extends Command {
     }
 
     if (args[0] !== 'search')
-      return message.reply(this.getHelp());
+      return message.channel.send(this.getHelp());
 
     var query = `
     query ($search: String) {
