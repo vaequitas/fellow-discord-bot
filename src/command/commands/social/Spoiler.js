@@ -5,9 +5,13 @@ class Spoiler extends Command {
   constructor(...args) {
     super(...args, {
       name: 'spoiler',
-      description: 'spoil something',
-      usages: ['spoiler', 'spoiler :spoiler tag; this is a spoiler', 'spoiler this is a spoiler'],
-      long_description: 'This is a PoC',
+      description: 'safely send spoiler messages',
+      usages: ['spoiler', 'spoiler this is a spoiler', 'spoiler :spoiler tag; this is a spoiler'],
+      long_description: [
+        'Use this command to safely send messages containing spoilers!',
+        'When you use this command, your message will instantly be deleted and replaced with a bot message. The bot message will only display the spoiler tag. Reacting to the bot message will cause the bot to DM you the spoiler.',
+        'You can optionally provide a spoiler tag by using a colon and semi-colon to delimit the tag.',
+      ].join('\n'),
       aliases: ['spoil', 's'],
       enabled: true,
     });
