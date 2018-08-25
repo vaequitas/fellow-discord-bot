@@ -34,9 +34,9 @@ class Recommend extends Command {
       if (result.opt.genre && result.opt.genre.length)
         limit = Math.floor(result.opt.genre.length <= 1 ? limit / 1.5 : limit / 2)
 
-      recommendation = await this.showProvider.getRandomFirstTopGenre(limit, result.opt)
+      recommendation = await this.showProvider.getRandomTopGenre(limit, result.opt)
     } else {
-      recommendation = await this.showProvider.getRandomFirstTop(50);
+      recommendation = await this.showProvider.getRandomTop(50);
     }
 
     if (!recommendation)

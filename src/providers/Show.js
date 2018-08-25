@@ -33,42 +33,11 @@ class ShowProvider {
     return media;
   }
 
-  async getRandomFirstTop(limit) {
-    const data = await this.getSortedShows('SCORE_DESC', limit);
-    if (!data)
-      return;
-    //const firstData = this.filterSequels(data);
-    const firstData = data;
-    const media = firstData[Math.floor(Math.random()*firstData.length)];
-    return media;
-  }
-
-  filterSequels(data) {
-    return data.filter(media => {
-      if (!media.relations.edges.length)
-        return true
-
-      return !media.relations.edges.some(relation => {
-        return (['PREQUEL', 'PARENT'].includes(relation.relationType))
-      })
-    });
-  }
-
   async getRandomTopGenre(limit, genre) {
     const data = await this.getSortedShows('SCORE_DESC', limit, genre);
     if (!data)
       return;
     const media = data[Math.floor(Math.random()*data.length)];
-    return media;
-  }
-
-  async getRandomFirstTopGenre(limit, opts) {
-    const data = await this.getSortedShows('SCORE_DESC', limit, opts);
-    if (!data)
-      return;
-    //const firstData = this.filterSequels(data);
-    const firstData = data;
-    const media = firstData[Math.floor(Math.random()*firstData.length)];
     return media;
   }
 
