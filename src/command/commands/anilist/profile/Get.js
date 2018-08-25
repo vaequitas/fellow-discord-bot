@@ -1,5 +1,4 @@
 const Command = require('../../../Command.js');
-const fetch = require('node-fetch');
 const UserProvider = require('../../../../providers/User.js');
 
 class Get extends Command {
