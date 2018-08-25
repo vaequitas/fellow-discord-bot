@@ -34,7 +34,7 @@ class Spoiler extends Command {
     if (!args.length)
       return message.channel.send(this.getHelp());
 
-    message.delete(1000);
+    message.delete();
 
     const full_message = args.join(' ').trim();
     let tag = ''
