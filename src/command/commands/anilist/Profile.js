@@ -35,13 +35,6 @@ class Profile extends Command {
       return await this.subcommands.get(command).run(message, args)
     }
 
-    if (args[0] == 'set') {
-      if (!args[1].match(/https:\/\/anilist.co\/user\/.*/))
-        return message.reply('Sorry, that doesn\'t look like an anilist profile.');
-      const user = await this.user.modifyUser(message.author.id, {profile: args[1]});
-      return message.reply(`set your profile.`);
-    }
-
     if (args[0] !== 'search')
       return message.channel.send(this.getHelp());
 
