@@ -79,38 +79,6 @@ class ShowProvider {
     return data.Page.media;
   }
 
-  async searchMultiple(searchTerm, limit) {
-    const queryTemplate = `
-    query ($id: Int, $page: Int, $perPage: Int, $search: String) {
-      Page (page: $page, perPage: $perPage) {
-        pageInfo {
-          total
-        }
-        media (id: $id, search: $search) {
-          averageScore
-          siteUrl
-          title {
-            romaji
-          }
-        }
-      }
-    }
-    `;
-
-    const variables = {
-      search: searchTerm,
-      page: 1,
-      perPage: limit
-    };
-
-    const query = await this.buildQuery(queryTemplate, variables);
-    const data = await this.queryApi(query);
-    if (!data.Page || !data.Page.media.length)
-      return
-
-    return data.Page.media;
-  }
-
   async buildQuery(query, variables) {
     return JSON.stringify({
       query: query,
