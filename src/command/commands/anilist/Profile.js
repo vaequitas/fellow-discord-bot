@@ -30,6 +30,8 @@ class Profile extends Command {
       const command = args.shift().toLowerCase();
       return await this.subcommands.get(command).run(message, args)
     }
+
+    return await this.subcommands.get('get').run(message, args);
   }
 }
 

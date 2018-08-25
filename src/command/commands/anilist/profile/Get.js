@@ -16,7 +16,11 @@ class Get extends Command {
     if (!args.length) {
       member = message.author
     } else {
-      member = message.mentions.members.first();
+      const mentions = message.mentions.members;
+      if (!mentions.size)
+        return
+
+      member = mentions.first();
     }
 
     const profile = await this.getProfile(member.id);
