@@ -7,8 +7,12 @@ class Recommend extends Command {
     super(...args, {
       name: 'recommend',
       description: 'recommends you an anime',
-      usages: ['recommend', 'recommend [-g|--genre genre]...', 'recommend [-t|--tag tag]...'],
-      long_description: 'This command will recommend you an anime, optionally filtered by genre or tags. You can specify multiple tags by repeating -t',
+      usages: ['recommend', 'recommend -g example_genre', 'recommend -t example_tag'],
+      long_description: [
+        'Recommends you a show by searching AniList using the filters provided.',
+        'Can be filtered by any combination of AniList genres by adding the -g option.',
+        'Can be filtered by any combination of AniList tags by adding the -t option.',
+      ].join('\n'),
       aliases: ['gief'],
       enabled: true,
     });
@@ -40,7 +44,7 @@ class Recommend extends Command {
     }
 
     if (!recommendation)
-      return message.reply('i failed to find a show owo');
+      return message.reply('sorry! I couldn\'t find any shows matching your request :c');
 
     const m = `I recommend ${recommendation.title.romaji}, with average score ${recommendation.averageScore}%: ${recommendation.siteUrl}`;
     return message.reply(m);
