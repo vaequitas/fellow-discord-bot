@@ -51,11 +51,6 @@ class ShowProvider {
         media (sort: $sort, genre_in: $genre_in, status: FINISHED, type: ANIME, tag_in: $tag_in) {
           averageScore
           siteUrl
-          relations {
-            edges {
-              relationType
-            }
-          }
           title {
             romaji
           }
