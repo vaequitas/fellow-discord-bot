@@ -12,7 +12,7 @@ class Make extends Command {
   }
 
   async run(message, args) {
-    console.log('not implemented');
+    const viewings = await this.viewingProvider.getAllPending();
   }
 }
 
