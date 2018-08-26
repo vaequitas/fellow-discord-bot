@@ -23,7 +23,12 @@ class SuggestionCommand extends Command {
   }
 
   async run(message, args) {
-    console.log('not implemented');
+    if (args.length && this.subcommands.has(args[0])) {
+      const command = args.shift().toLowerCase();
+      return await this.subcommands.get(command).run(message, args)
+    }
+
+    return await this.subcommands.get('make').run(message, args);
   }
 }
 
