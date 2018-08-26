@@ -12,6 +12,7 @@ class Recommend extends Command {
         'Recommends you a show by searching AniList using the filters provided.',
         'Can be filtered by any combination of AniList genres by adding the -g option.',
         'Can be filtered by any combination of AniList tags by adding the -t option.',
+        'If your tag/genre has multiple words, enclose it in double-quotes. Example: --tag "Mahou Shoujo"',
       ].join('\n'),
       aliases: ['gief'],
       enabled: true,
