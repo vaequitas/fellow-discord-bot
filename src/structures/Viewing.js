@@ -1,6 +1,7 @@
 class Viewing {
   constructor(viewing) {
-    this.date = viewing.date
+    this.date = viewing.date;
+    this.host = viewing.host;
   }
 }
 

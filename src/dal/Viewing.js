@@ -3,6 +3,17 @@ class ViewingDal {
     this.database = database;
   }
 
+  async save(date, host) {
+    const viewingsRef = await this.database.ref('/viewings');
+    const newViewingRef = await viewingsRef.push();
+    await newViewingRef.set({
+      date: date,
+      host: host,
+    });
+
+    return newViewingRef.key
+  }
+
   async getViewing(viewingId) {
     return await this.database.ref('/viewings/' + viewingId).once('value').then(function(snapshot) {
       return snapshot.val();
