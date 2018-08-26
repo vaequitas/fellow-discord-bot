@@ -1,5 +1,6 @@
 const Command = require('../../../Command.js');
 const ViewingProvider = require('../../../../providers/Viewing.js');
+const SuggestionProvider = require('../../../../providers/Suggestion.js');
 const { Collection } = require('discord.js');
 
 class Make extends Command {
@@ -10,6 +11,7 @@ class Make extends Command {
     });
     this.parent = 'suggestion'
     this.viewingProvider = new ViewingProvider(this.client.firebase.database());
+    this.suggestionProvider = new SuggestionProvider(this.client.firebase.database());
   }
 
   async run(message, args) {
@@ -42,6 +44,10 @@ class Make extends Command {
         const key    = viewingKeys[choice];
         const chosen = viewings.get(key);
         message.reply(`${new Date(chosen.date).toUTCString()}: ${this.client.users.get(chosen.host).username}`);
+        await this.suggestionProvider.update(key, collected.first().author.id, {
+          name: 'Test',
+          url: 'https://url',
+        });
       });
   }
 }
