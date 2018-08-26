@@ -6,6 +6,12 @@ class SuggestionDal {
   async update(viewingId, userId, config) {
     return await this.database.ref(`/suggestions/${viewingId}/${userId}`).update(config)
   }
+
+  async get(viewingId) {
+    return await this.database.ref('/suggestions/' + viewingId).once('value').then(function(snapshot) {
+      return snapshot.val();
+    });
+  }
 }
 
 module.exports = SuggestionDal;
