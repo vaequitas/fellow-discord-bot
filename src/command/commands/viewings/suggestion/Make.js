@@ -58,6 +58,9 @@ class Make extends Command {
 
 
     const viewings = await this.viewingProvider.getAllPending();
+    if (!viewings)
+      return message.reply('there are no scheduled viewings to suggest shows for. Sorry!');
+
     const viewingKeys = viewings.keyArray();
     const viewingStrings = viewingKeys.map((key, index) => {
       const viewing = viewings.get(key);
