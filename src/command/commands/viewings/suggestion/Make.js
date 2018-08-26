@@ -19,7 +19,7 @@ class Make extends Command {
       const viewing = viewings.get(key);
       const host = this.client.users.get(viewing.host).username;
       const date = new Date(viewing.date).toUTCString();
-      return ` - ${index}. ${date} (${host})`;
+      return ` [${index}] ${date} (${host})`;
     });
 
     const m = [
@@ -29,7 +29,9 @@ class Make extends Command {
     const new_message = await message.reply(m);
 
     const filter = response => {
-      return response.author.id === message.author.id && viewingKeys.length > Number(response.content.trim())
+      const choice = Number(response.content.trim());
+      return response.author.id === message.author.id
+        && choice && viewingKeys.length > choice && 0 <= choice;
     }
     new_message.channel.awaitMessages(filter, { max: 1, time: 30000 })
       .then(async collected => {
@@ -37,7 +39,7 @@ class Make extends Command {
           return message.reply('selection timed out.');
 
         const choice = Number(collected.first().content.trim());
-        const key = viewingKeys[choice];
+        const key    = viewingKeys[choice];
         const chosen = viewings.get(key);
         message.reply(`${new Date(chosen.date).toUTCString()}: ${this.client.users.get(chosen.host).username}`);
       });
