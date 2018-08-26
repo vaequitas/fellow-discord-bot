@@ -1,6 +1,30 @@
 const fetch = require('node-fetch');
 
 class ShowProvider {
+  async getById(id) {
+    const queryTemplate = `
+    query ($id: Int) {
+      Media (id: $id, type: ANIME) {
+        id
+        title {
+          romaji
+          english
+          native
+        }
+        siteUrl
+      }
+    }
+    `;
+
+    const variables = {
+        id: id
+    };
+
+    const query = await this.buildQuery(queryTemplate, variables);
+    const data = await this.queryApi(query);
+    return data.Media;
+  }
+
   async searchSingle(searchTerm) {
     const queryTemplate = `
     query ($search: String) {

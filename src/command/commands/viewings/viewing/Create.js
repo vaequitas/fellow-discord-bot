@@ -56,7 +56,7 @@ class Create extends Command {
     await new_message.react('☑');
 
     const filter = (reaction, user) => reaction.emoji.name === '☑' && user.id === message.author.id
-    new_message.awaitReactions(filter, {time: 15000, max: 1})
+    new_message.awaitReactions(filter, {time: 30000, max: 1})
       .then(async collected => {
         if (!collected.size)
           return message.reply('confirmation timed out. Cancelling creation.');

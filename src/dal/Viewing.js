@@ -30,6 +30,12 @@ class ViewingDal {
     });
   }
 
+  async getAllAfter(date) {
+    return await this.database.ref('/viewings/').orderByChild('date').startAt(date).once('value').then(snapshot => {
+      return snapshot.val();
+    });
+  }
+
   async getNextViewing() {
     return await this.getFirstViewingAfter(new Date().toISOString());
   }
