@@ -39,7 +39,7 @@ class Create extends Command {
     new_message.awaitReactions(filter, {time: 15000, max: 1})
       .then(async collected => {
         if (!collected.size)
-          return message.reply('confirmation timed out, cancelling creation.');
+          return message.reply('confirmation timed out. Cancelling creation.');
 
         const viewingKey = await this.provider.save(viewing);
         return await message.reply(`succesfully created viewing ${viewingKey}`);
