@@ -1,5 +1,6 @@
 const Command = require('../../Command.js');
-const ViewingProvider = require('../../../providers/Viewing.js');
+const CommandStore = require('../../CommandStore.js');
+const path = require('path');
 
 class ViewingCommand extends Command {
   constructor(...args) {
@@ -11,13 +12,16 @@ class ViewingCommand extends Command {
       enabled: false,
     });
 
-    this.provider = new ViewingProvider(this.client.firebase.database());
+    this.subcommands = new CommandStore(this.client, {
+      dir: `${path.dirname(require.main.filename)}${path.sep}src${path.sep}command${path.sep}commands${path.sep}viewings${path.sep}vewing`,
+      parent: this.name
+    });
   }
 
   async run(message, args) {
-    if (!args.length) {
-      const viewing = await this.provider.getNext();
-      message.reply(`The next viewing is at ${new Date(viewing.date).toUTCString()}`);
+    if (args.length && this.subcommands.has(args[0])) {
+      const command = args.shift().toLowerCase();
+      return await this.subcommands.get(command).run(message, args)
     }
   }
 }
