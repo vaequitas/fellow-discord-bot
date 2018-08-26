@@ -7,7 +7,7 @@ class SuggestionCommand extends Command {
     super(...args, {
       name: 'suggestion',
       description: 'Suggest a show for a viewing',
-      usages: ['suggest <show name>|<show url>', 'suggestions get'],
+      usages: ['suggest <show name>|<show url>', 'suggestions show'],
       aliases: ['suggest', 'suggestions'],
       long_description: [
         'This is very much a WIP. It is a minimal proof of concept.',
