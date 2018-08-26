@@ -86,14 +86,20 @@ class Make extends Command {
           return message.reply('selection timed out.');
 
         const choice = Number(collected.first().content.trim());
-        const key    = viewingKeys[choice];
-        const chosen = viewings.get(key);
-        await this.suggestionProvider.update(key, collected.first().author.id, {
+        const viewingId = viewingKeys[choice];
+        const userId = collected.first().author.id;
+
+        const existingSuggestion = await this.suggestionProvider.getUserSuggestion(viewingId, userId);
+        if (existingSuggestion && existingSuggestion.votes && existingSuggestion.votes > 0)
+          return message.reply('your existing suggestion already has votes, therefore can\'t be changed.');
+
+        await this.suggestionProvider.update(viewingId, userId, {
           id: suggestionData.id,
           name: suggestionData.title.romaji,
           url: suggestionData.siteUrl,
+          votes: 0,
         });
-        message.reply('suggestion saved.')
+        message.reply(`suggestion ${existingSuggestion ? 'overwritten' : 'saved'}.`)
       });
   }
 }

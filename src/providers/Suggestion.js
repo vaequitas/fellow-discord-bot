@@ -21,6 +21,10 @@ class SuggestionProvider {
 
     return suggestions;
   }
+
+  async getUserSuggestion(viewingId, userId) {
+    return await this.dal.getViewingUser(viewingId, userId);
+  }
 }
 
 module.exports = SuggestionProvider;

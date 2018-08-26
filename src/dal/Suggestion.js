@@ -12,6 +12,12 @@ class SuggestionDal {
       return snapshot.val();
     });
   }
+
+  async getViewingUser(viewingId, userId) {
+    return await this.database.ref(`/suggestions/${viewingId}/${userId}`).once('value').then(snapshot => {
+      return snapshot.val();
+    });
+  }
 }
 
 module.exports = SuggestionDal;
