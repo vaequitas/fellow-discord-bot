@@ -13,9 +13,10 @@ class ViewingCommand extends Command {
     });
 
     this.subcommands = new CommandStore(this.client, {
-      dir: `${path.dirname(require.main.filename)}${path.sep}src${path.sep}command${path.sep}commands${path.sep}viewings${path.sep}vewing`,
+      dir: `${path.dirname(require.main.filename)}${path.sep}src${path.sep}command${path.sep}commands${path.sep}viewings${path.sep}viewing`,
       parent: this.name
     });
+    this.subcommands.loadFiles();
   }
 
   async run(message, args) {
@@ -23,6 +24,8 @@ class ViewingCommand extends Command {
       const command = args.shift().toLowerCase();
       return await this.subcommands.get(command).run(message, args)
     }
+
+    return await this.subcommands.get('create').run(message, args);
   }
 }
 
