@@ -30,12 +30,18 @@ class Make extends Command {
       suggestionData = await this.showProvider.searchSingle(suggestion);
       const confirm_show_message = await message.reply(`is this the show you want to suggest? ${suggestionData.siteUrl}`);
       await confirm_show_message.react('☑');
-      const filter = (reaction, user) => reaction.emoji.name === '☑' && user.id === message.author.id
+      await confirm_show_message.react('❎');
+      const filter = (reaction, user) => reaction.emoji.name === '☑' || reaction.emoji.name === '❎' && user.id === message.author.id
       const confirmation = await confirm_show_message.awaitReactions(filter, {time: 45000, max: 1})
         .then(async collected => {
           if (!collected.size) {
-            message.reply('confirmation timed out. Cancelling creation.');
+            message.reply('confirmation timed out. Cancelling suggestion.');
             return false
+          }
+
+          if (collected.has('❎')) {
+            message.reply('OK. Cancelling suggestion. You could try giving me the AniList url.')
+            return false;
           }
 
           return true
