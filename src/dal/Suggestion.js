@@ -14,7 +14,7 @@ class SuggestionDal {
   }
 
   async getViewingUser(viewingId, userId) {
-    return await this.database.ref(`/suggestions/${viewingId}/${userId}`).once('value').then(snapshot => {
+    return await this.database.ref(`/suggestions/${viewingId}/${userId}`).orderByChild('votes').once('value').then(snapshot => {
       return snapshot.val();
     });
   }

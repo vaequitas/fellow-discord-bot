@@ -28,7 +28,7 @@ class Show extends Command {
     });
 
     const m = [
-      'Which viewing do you want to suggest that show for?:',
+      'Which viewing do you want to see the suggestions for?:',
     ].concat(viewingStrings);
 
     const new_message = await message.reply(m);
@@ -49,10 +49,11 @@ class Show extends Command {
         const suggestions = await this.suggestionProvider.get(key);
         if (!suggestions)
           return message.reply('This viewing has no suggestions')
+        const reversedSuggestions = suggestions.array().reverse();
 
-        const suggestionStrings = suggestions.map(element => {
+        const suggestionStrings = reversedSuggestions.map(element => {
           console.log(element);
-          return `[ ${element.name} ] ${element.url}`
+          return `(${element.votes}) [ ${element.name} ] ${element.url}`
         });
 
         return message.reply(suggestionStrings, {code: true});
