@@ -17,7 +17,7 @@ class Make extends Command {
     const viewingKeys = viewings.keyArray();
     const viewingStrings = viewingKeys.map((key, index) => {
       const viewing = viewings.get(key);
-      const host = this.client.users.get(viewing.host);
+      const host = this.client.users.get(viewing.host).username;
       const date = new Date(viewing.date).toUTCString();
       return ` - ${index}. ${date} (${host})`;
     });
@@ -26,11 +26,21 @@ class Make extends Command {
       'Which viewing do you want to suggest that show for?:',
     ].concat(viewingStrings);
 
-    const new_message = message.reply(m);
+    const new_message = await message.reply(m);
+
     const filter = response => {
-      response.author.id === message.author.id && viewingKeys.keys.includes(response.content.trim())
+      return response.author.id === message.author.id && viewingKeys.length > Number(response.content.trim())
     }
-    new_message.channel.awaitMessages(filter, { maxMatches: 1, time: 30000 });
+    new_message.channel.awaitMessages(filter, { max: 1, time: 30000 })
+      .then(async collected => {
+        if (!collected.size)
+          return message.reply('selection timed out.');
+
+        const choice = Number(collected.first().content.trim());
+        const key = viewingKeys[choice];
+        const chosen = viewings.get(key);
+        message.reply(`${new Date(chosen.date).toUTCString()}: ${this.client.users.get(chosen.host).username}`);
+      });
   }
 }
 
