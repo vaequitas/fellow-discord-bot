@@ -24,7 +24,19 @@ class Create extends Command {
     if (!timezoneOffset)
       result.start.assign('timezoneOffset', 0);
 
-    const date = new Date(result.start.date());
+    if (!result.start.isCertain('hour'))
+      result.start.assign('hour', 20);
+
+    if (new Date(result.start.date()) < new Date()) {
+      if (result.start.isCertain('weekday'))
+        result.start.assign('day', result.start.get('day') + 7);
+      else if (result.start.isCertain('day'))
+        return message.reply('you can\'t host for a day in the past');
+      else if (result.start.isCertain('hour'))
+        result.start.assign('day', result.start.get('day') + 1);
+    }
+
+    let date = new Date(result.start.date());
     if (!date) return
 
     const viewing = new Viewing({
