@@ -13,7 +13,9 @@ class Get extends Command {
   }
 
   async run(message, args) {
-    console.log('todo');
+    const viewing = await this.provider.getNext();
+    const host = await this.client.users.get(viewing.host);
+    message.reply(`The next viewing is on ${new Date(viewing.date).toUTCString()}, hosted by ${host}`);
   }
 }
 
