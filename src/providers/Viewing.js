@@ -6,6 +6,10 @@ class ViewingProvider {
     this.dal = new ViewingDal(database);
   }
 
+  async save(viewing) {
+    return await this.dal.save(viewing.date, viewing.host);
+  }
+
   async getNext() {
     const viewingRaw = await this.dal.getNextViewing();
     if (!viewingRaw)

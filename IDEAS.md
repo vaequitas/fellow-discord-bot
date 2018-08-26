@@ -29,9 +29,13 @@ _description_: Is this needed? Can I get away with _type_ that says Movie|Show (
 
 Can pass a link to show. Can pass a string title which will search anilist, this would require confirmation via emoticon response. Should validate if show or movie. Should validate if already suggested. Needs to neatly allow users to specify which viewing they are suggesting for? Is this how it works? Should it just go in a pool which allows hosts to select from the suggestion pool?
 
+ - Only allow one suggestion per person
+
 **Vote subcommand**
 
 Once shows have been suggested, you should be able to vote on them. Need to specify which viewing. One vote per person per viewing. Easy to see votes.
+
+ - Dont let people vote on their own suggestions
 
 ### Info commands
 Returns info like version, where to report issues, source, etc.
