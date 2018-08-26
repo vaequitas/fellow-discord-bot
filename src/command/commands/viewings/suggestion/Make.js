@@ -88,12 +88,12 @@ class Make extends Command {
         const choice = Number(collected.first().content.trim());
         const key    = viewingKeys[choice];
         const chosen = viewings.get(key);
-        message.reply(`${new Date(chosen.date).toUTCString()}: ${this.client.users.get(chosen.host).username}`);
         await this.suggestionProvider.update(key, collected.first().author.id, {
           id: suggestionData.id,
           name: suggestionData.title.romaji,
           url: suggestionData.siteUrl,
         });
+        message.reply('suggestion saved.')
       });
   }
 }
