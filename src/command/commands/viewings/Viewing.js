@@ -5,8 +5,10 @@ class ViewingCommand extends Command {
   constructor(...args) {
     super(...args, {
       name: 'viewing',
-      description: 'Schedule/manage viewings',
-      aliases: ['showtimes']
+      description: 'Schedule/manage hosts',
+      aliases: ['host'],
+      long_description: 'This is a proof of concept',
+      enabled: false,
     });
 
     this.provider = new ViewingProvider(this.client.firebase.database());
