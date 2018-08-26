@@ -1,5 +1,6 @@
 const ViewingDal = require('../dal/Viewing.js');
 const ViewingFactory = require('../structures/ViewingFactory.js');
+const { Collection } = require('discord.js');
 
 class ViewingProvider {
   constructor(database) {
@@ -16,6 +17,20 @@ class ViewingProvider {
       return null;
 
     return await ViewingFactory.create(viewingRaw);
+  }
+
+  async getAllPending() {
+    const viewingsRaw = await this.dal.getAllAfter(new Date().toISOString());
+    if (!viewingsRaw)
+      return;
+
+    const viewings = new Collection();
+    for (const viewing in viewingsRaw) {
+      const viewingObj = await ViewingFactory.create(viewingsRaw[viewing]);
+      viewings.set(viewing, viewingObj);
+    }
+
+    return viewings;
   }
 }
 
