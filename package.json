@@ -1,6 +1,6 @@
 {
     "name": "fellows-bot",
-    "version": "0.0.9",
+    "version": "0.0.10",
     "description": "A bot for the AniFellows discord server",
     "main": "bot.js",
     "author": "Nonki",
