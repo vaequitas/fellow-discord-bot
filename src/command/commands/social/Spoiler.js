@@ -25,7 +25,12 @@ class Spoiler extends Command {
       const user = this.client.users.get(event.d.user_id);
       if (user.bot) return;
 
+      const channel   = this.client.channels.get(event.d.channel_id);
       const messageId = event.d.message_id;
+      const message   = await channel.fetchMessage(messageId);
+      const author    = message.author;
+      if (!author.bot) return
+
       const spoiler = await this.spoilerProvider.get(messageId);
       if (!spoiler || !spoiler.text.length)
         return
