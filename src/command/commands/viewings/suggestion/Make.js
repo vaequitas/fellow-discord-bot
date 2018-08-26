@@ -28,10 +28,13 @@ class Make extends Command {
       suggestionData = await this.showProvider.getById(showId);
     } else {
       suggestionData = await this.showProvider.searchSingle(suggestion);
-      const confirm_show_message = await message.reply(`is this the show you want to suggest? ${suggestionData.siteUrl}`);
-      await confirm_show_message.react('☑');
-      await confirm_show_message.react('❎');
-      const filter = (reaction, user) => reaction.emoji.name === '☑' || reaction.emoji.name === '❎' && user.id === message.author.id
+      if (!suggestionData)
+        return message.reply('I couldn\'t find shows for that search term!');
+
+      const confirm_show_message = await message.reply(`did you want to suggest ${suggestionData.title.romaji}? ${suggestionData.siteUrl}`);
+      confirm_show_message.react('☑');
+      confirm_show_message.react('❎');
+      const filter = (reaction, user) => (reaction.emoji.name === '☑' || reaction.emoji.name === '❎') && user.id === message.author.id
       const confirmation = await confirm_show_message.awaitReactions(filter, {time: 45000, max: 1})
         .then(async collected => {
           if (!collected.size) {
