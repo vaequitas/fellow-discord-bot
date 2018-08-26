@@ -2,6 +2,7 @@ const Command = require('../../../Command.js');
 const ViewingProvider = require('../../../../providers/Viewing.js');
 const Viewing = require('../../../../structures/Viewing.js');
 const chrono = require('chrono-node');
+const perms = require('../../../../../.permissions.json');
 
 class Create extends Command {
   constructor(...args) {
@@ -14,6 +15,13 @@ class Create extends Command {
   }
 
   async run(message, args) {
+    const hasPerm = perms.roles.hosts.some(roleId => {
+      return message.guild.member(message.author).roles.has(roleId)
+    });
+
+    if (!hasPerm)
+      return await message.reply(`you don't have permission to do that. Sorry!`)
+
     const full_message = args.join(' ');
     const results      = await chrono.parse(full_message);
     if (!results.length)
