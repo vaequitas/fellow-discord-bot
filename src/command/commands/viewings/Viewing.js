@@ -7,7 +7,7 @@ class ViewingCommand extends Command {
     super(...args, {
       name: 'viewing',
       description: 'Schedule/manage/view hosting sessions',
-      usages: ['viewing 10pm tomorrow', 'viewing create 10pm tomorrow', 'viewing get'],
+      usages: ['viewing (defaults to get)', 'viewing create 10pm tomorrow', 'viewing get'],
       aliases: ['host'],
       long_description: [
         'This is very much a WIP. It is a minimal proof of concept.',
@@ -32,7 +32,7 @@ class ViewingCommand extends Command {
       return await this.subcommands.get(command).run(message, args)
     }
 
-    return await this.subcommands.get('create').run(message, args);
+    return await this.subcommands.get('get').run(message, args);
   }
 }
 
