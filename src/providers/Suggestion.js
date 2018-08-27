@@ -25,6 +25,11 @@ class SuggestionProvider {
   async getUserSuggestion(viewingId, userId) {
     return await this.dal.getViewingUser(viewingId, userId);
   }
+
+  async getShowSuggestion(viewingId, showId) {
+    const viewing = await this.get(viewingId);
+    return viewing.find(element => element.id === showId);
+  }
 }
 
 module.exports = SuggestionProvider;
