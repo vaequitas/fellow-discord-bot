@@ -20,7 +20,7 @@ class Make extends Command {
     const suggestion = args.join(' ').trim();
     let suggestionData = null;
     if (suggestion.match(/^https?:\/\//)) {
-      const suggestionMatches = suggestion.match(/^https:\/\/anilist.co\/anime\/([0-8]+)/);
+      const suggestionMatches = suggestion.match(/^https:\/\/anilist.co\/anime\/([0-9]+)/);
       if (!suggestionMatches)
         return message.reply('it looks like you tried to pass a link, but the link looks malformed.');
 
