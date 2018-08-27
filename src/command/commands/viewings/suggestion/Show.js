@@ -46,17 +46,26 @@ class Show extends Command {
         const choice = Number(collected.first().content.trim());
         const key    = viewingKeys[choice];
         const chosen = viewings.get(key);
-        const suggestions = await this.suggestionProvider.get(key);
+        const suggestions = await this.getViewingSuggestions(key);
         if (!suggestions)
           return message.reply('this viewing has no suggestions')
-        const reversedSuggestions = suggestions.array().reverse();
 
-        const suggestionStrings = reversedSuggestions.map(element => {
-          return `(${element.votes}) [ ${element.name} ] ${element.url}`
-        });
-
+        const suggestionStrings = this.formatViewingSuggestions(suggestions);
         return message.reply(suggestionStrings, {code: true});
       });
+  }
+
+  async getViewingSuggestions(key) {
+    const suggestions = await this.suggestionProvider.get(key);
+    if (!suggestions)
+      return
+    return suggestions.array().reverse();
+  }
+
+  formatViewingSuggestions(suggestions) {
+    return suggestions.map(element => {
+      return `(${element.votes}) [ ${element.name} ] ${element.url}`
+    });
   }
 }
 
