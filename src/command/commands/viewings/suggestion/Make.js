@@ -97,14 +97,18 @@ class Make extends Command {
         if (viewingHasShow)
           return message.reply('that show has already been suggested for this viewing.')
 
-        await this.suggestionProvider.update(viewingId, userId, {
-          id: suggestionData.id,
-          name: suggestionData.title.romaji,
-          url: suggestionData.siteUrl,
-          votes: 0,
-        });
+        await this.saveSuggestion(viewingId, userId, suggestionData);
         message.reply(`suggestion ${existingSuggestion ? 'overwritten' : 'saved'}.`)
       });
+  }
+
+  async saveSuggestion(viewingId, userId, suggestion) {
+    return await this.suggestionProvider.update(viewingId, userId, {
+      id: suggestion.id,
+      name: suggestion.title.romaji,
+      url: suggestion.siteUrl,
+      votes: 0,
+    });
   }
 }
 
