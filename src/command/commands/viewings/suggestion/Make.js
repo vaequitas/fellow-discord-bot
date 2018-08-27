@@ -61,6 +61,13 @@ class Make extends Command {
     if (!viewings)
       return message.reply('there are no scheduled viewings to suggest shows for. Sorry!');
 
+    if (viewings.array().length === 1) {
+      const result = await this.saveSuggestion(viewings.firstKey(), message.author.id, suggestionData);
+      if (!result.ok)
+        return message.channel.send(`${result.error} ${message.author}`)
+      return message.reply('suggestion saved.');
+    }
+
     const viewingKeys = viewings.keyArray();
     const viewingStrings = viewingKeys.map((key, index) => {
       const viewing = viewings.get(key);
