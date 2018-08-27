@@ -93,6 +93,10 @@ class Make extends Command {
         if (existingSuggestion && existingSuggestion.votes && existingSuggestion.votes > 0)
           return message.reply('your existing suggestion already has votes, therefore can\'t be changed.');
 
+        const viewingHasShow = await this.suggestionProvider.getShowSuggestion(viewingId, suggestionData.id);
+        if (viewingHasShow)
+          return message.reply('that show has already been suggested for this viewing.')
+
         await this.suggestionProvider.update(viewingId, userId, {
           id: suggestionData.id,
           name: suggestionData.title.romaji,
