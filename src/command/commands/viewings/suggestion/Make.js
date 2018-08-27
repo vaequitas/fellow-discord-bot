@@ -70,7 +70,7 @@ class Make extends Command {
     });
 
     const m = [
-      'Which viewing do you want to suggest that show for?:',
+      'which viewing do you want to suggest that show for?:',
     ].concat(viewingStrings);
 
     const new_message = await message.reply(m);

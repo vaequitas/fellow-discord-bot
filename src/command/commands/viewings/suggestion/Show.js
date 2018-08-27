@@ -28,7 +28,7 @@ class Show extends Command {
     });
 
     const m = [
-      'Which viewing do you want to see the suggestions for?:',
+      'which viewing do you want to see the suggestions for?:',
     ].concat(viewingStrings);
 
     const new_message = await message.reply(m);
