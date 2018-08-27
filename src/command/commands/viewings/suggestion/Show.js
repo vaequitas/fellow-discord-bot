@@ -19,6 +19,13 @@ class Show extends Command {
     if (!viewings)
       return message.reply('there are no scheduled viewings to suggest shows for. Sorry!');
 
+    if (viewings.array().length === 1) {
+      const suggestionsList = await this.getViewingSuggestionsList(viewings.firstKey());
+      if (!suggestionsList)
+        return message.reply('this viewing has no suggestions')
+      return message.reply(suggestionsList, {code: true})
+    }
+
     const viewingKeys = viewings.keyArray();
     const viewingStrings = viewingKeys.map((key, index) => {
       const viewing = viewings.get(key);
@@ -46,13 +53,19 @@ class Show extends Command {
         const choice = Number(collected.first().content.trim());
         const key    = viewingKeys[choice];
         const chosen = viewings.get(key);
-        const suggestions = await this.getViewingSuggestions(key);
-        if (!suggestions)
+        const suggestionsList = await this.getViewingSuggestionsList(key);
+        if (!suggestionsList)
           return message.reply('this viewing has no suggestions')
-
-        const suggestionStrings = this.formatViewingSuggestions(suggestions);
-        return message.reply(suggestionStrings, {code: true});
+        return message.reply(suggestionsList, {code: true})
       });
+  }
+
+  async getViewingSuggestionsList(key) {
+    const suggestions = await this.getViewingSuggestions(key);
+    if (!suggestions)
+      return
+
+    return this.formatViewingSuggestions(suggestions);
   }
 
   async getViewingSuggestions(key) {

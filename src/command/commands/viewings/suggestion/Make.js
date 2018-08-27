@@ -61,6 +61,13 @@ class Make extends Command {
     if (!viewings)
       return message.reply('there are no scheduled viewings to suggest shows for. Sorry!');
 
+    if (viewings.array().length === 1) {
+      const result = await this.saveSuggestion(viewings.firstKey(), message.author.id, suggestionData);
+      if (!result.ok)
+        return message.channel.send(`${result.error} ${message.author}`)
+      return message.reply('suggestion saved.');
+    }
+
     const viewingKeys = viewings.keyArray();
     const viewingStrings = viewingKeys.map((key, index) => {
       const viewing = viewings.get(key);
@@ -87,24 +94,22 @@ class Make extends Command {
 
         const choice = Number(collected.first().content.trim());
         const viewingId = viewingKeys[choice];
-        const userId = collected.first().author.id;
+        const userId = message.author.id;
 
-        const existingSuggestion = await this.suggestionProvider.getUserSuggestion(viewingId, userId);
-        if (existingSuggestion && existingSuggestion.votes && existingSuggestion.votes > 0)
-          return message.reply('your existing suggestion already has votes, therefore can\'t be changed.');
-
-        const viewingHasShow = await this.suggestionProvider.getShowSuggestion(viewingId, suggestionData.id);
-        if (viewingHasShow)
-          return message.reply('that show has already been suggested for this viewing.')
-
-        await this.suggestionProvider.update(viewingId, userId, {
-          id: suggestionData.id,
-          name: suggestionData.title.romaji,
-          url: suggestionData.siteUrl,
-          votes: 0,
-        });
-        message.reply(`suggestion ${existingSuggestion ? 'overwritten' : 'saved'}.`)
+        const result = await this.saveSuggestion(viewingId, userId, suggestionData);
+        if (!result.ok)
+          return message.channel.send(`${result.error} ${message.author}`)
+        message.reply('suggestion saved.');
       });
+  }
+
+  async saveSuggestion(viewingId, userId, suggestion) {
+    return await this.suggestionProvider.update(viewingId, userId, {
+      id: suggestion.id,
+      name: suggestion.title.romaji,
+      url: suggestion.siteUrl,
+      votes: 0,
+    });
   }
 }
 
