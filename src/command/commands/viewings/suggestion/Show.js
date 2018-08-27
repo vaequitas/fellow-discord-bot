@@ -52,7 +52,6 @@ class Show extends Command {
         const reversedSuggestions = suggestions.array().reverse();
 
         const suggestionStrings = reversedSuggestions.map(element => {
-          console.log(element);
           return `(${element.votes}) [ ${element.name} ] ${element.url}`
         });
 
