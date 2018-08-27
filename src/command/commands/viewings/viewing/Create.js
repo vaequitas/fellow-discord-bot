@@ -62,7 +62,7 @@ class Create extends Command {
           return message.reply('confirmation timed out. Cancelling creation.');
 
         const viewingKey = await this.provider.save(viewing);
-        return await message.reply(`succesfully created viewing ${viewingKey}`);
+        return await message.reply(`succesfully created viewing!`);
       }).catch(console.error);
   }
 }
