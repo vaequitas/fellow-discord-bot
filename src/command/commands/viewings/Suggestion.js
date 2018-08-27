@@ -12,7 +12,7 @@ class SuggestionCommand extends Command {
       long_description: [
         'This is very much a WIP. It is a minimal proof of concept.',
       ].join('\n'),
-      enabled: false,
+      enabled: true,
     });
 
     this.subcommands = new CommandStore(this.client, {
