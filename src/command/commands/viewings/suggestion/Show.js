@@ -19,6 +19,12 @@ class Show extends Command {
     if (!viewings)
       return message.reply('there are no scheduled viewings to suggest shows for. Sorry!');
 
+    if (viewings.array().length === 1) {
+      const suggestionsList = await this.getViewingSuggestionsList(viewings.firstKey());
+      if (!suggestionsList) return
+      return message.reply(suggestionsList, {code: true})
+    }
+
     const viewingKeys = viewings.keyArray();
     const viewingStrings = viewingKeys.map((key, index) => {
       const viewing = viewings.get(key);
