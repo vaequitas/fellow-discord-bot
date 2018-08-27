@@ -46,13 +46,17 @@ class Show extends Command {
         const choice = Number(collected.first().content.trim());
         const key    = viewingKeys[choice];
         const chosen = viewings.get(key);
-        const suggestions = await this.getViewingSuggestions(key);
-        if (!suggestions)
-          return message.reply('this viewing has no suggestions')
-
-        const suggestionStrings = this.formatViewingSuggestions(suggestions);
-        return message.reply(suggestionStrings, {code: true});
+        const suggestionsList = await this.getViewingSuggestionsList(key);
+        if (suggestionsList) message.reply(suggestionsList, {code: true})
       });
+  }
+
+  async getViewingSuggestionsList(key) {
+    const suggestions = await this.getViewingSuggestions(key);
+    if (!suggestions)
+      return message.reply('this viewing has no suggestions')
+
+    return this.formatViewingSuggestions(suggestions);
   }
 
   async getViewingSuggestions(key) {
