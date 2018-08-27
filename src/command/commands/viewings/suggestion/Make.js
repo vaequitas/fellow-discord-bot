@@ -87,18 +87,12 @@ class Make extends Command {
 
         const choice = Number(collected.first().content.trim());
         const viewingId = viewingKeys[choice];
-        const userId = collected.first().author.id;
+        const userId = message.author.id;
 
-        const existingSuggestion = await this.suggestionProvider.getUserSuggestion(viewingId, userId);
-        if (existingSuggestion && existingSuggestion.votes && existingSuggestion.votes > 0)
-          return message.reply('your existing suggestion already has votes, therefore can\'t be changed.');
-
-        const viewingHasShow = await this.suggestionProvider.getShowSuggestion(viewingId, suggestionData.id);
-        if (viewingHasShow)
-          return message.reply('that show has already been suggested for this viewing.')
-
-        await this.saveSuggestion(viewingId, userId, suggestionData);
-        message.reply(`suggestion ${existingSuggestion ? 'overwritten' : 'saved'}.`)
+        const result = await this.saveSuggestion(viewingId, userId, suggestionData);
+        if (!result.ok)
+          return message.channel.send(`${result.error} ${message.author}`)
+        message.reply('suggestion saved.');
       });
   }
 

@@ -6,8 +6,24 @@ class SuggestionProvider {
     this.dal = new SuggestionDal(database);
   }
 
-  async update(viewingId, userId, config) {
-    return await this.dal.update(viewingId, userId, config);
+  async update(viewingId, userId, suggestion) {
+    const existingSuggestion = await this.getUserSuggestion(viewingId, userId);
+    if (existingSuggestion && existingSuggestion.votes && existingSuggestion.votes > 0)
+      return this.errorReturn('Your existing suggestion already has votes, therefore can\'t be changed.')
+
+    const viewingHasShow = await this.getShowSuggestion(viewingId, suggestion.id);
+    if (viewingHasShow)
+      return this.errorReturn('That show has already been suggested for this viewing.')
+
+    await this.dal.update(viewingId, userId, suggestion);
+    return { ok: true };
+  }
+
+  errorReturn(message) {
+    return {
+      ok: false,
+      error: message
+    }
   }
 
   async get(viewingId) {
