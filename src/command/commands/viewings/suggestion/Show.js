@@ -21,7 +21,8 @@ class Show extends Command {
 
     if (viewings.array().length === 1) {
       const suggestionsList = await this.getViewingSuggestionsList(viewings.firstKey());
-      if (!suggestionsList) return
+      if (!suggestionsList)
+        return message.reply('this viewing has no suggestions')
       return message.reply(suggestionsList, {code: true})
     }
 
@@ -53,14 +54,16 @@ class Show extends Command {
         const key    = viewingKeys[choice];
         const chosen = viewings.get(key);
         const suggestionsList = await this.getViewingSuggestionsList(key);
-        if (suggestionsList) message.reply(suggestionsList, {code: true})
+        if (!suggestionsList)
+          return message.reply('this viewing has no suggestions')
+        return message.reply(suggestionsList, {code: true})
       });
   }
 
   async getViewingSuggestionsList(key) {
     const suggestions = await this.getViewingSuggestions(key);
     if (!suggestions)
-      return message.reply('this viewing has no suggestions')
+      return
 
     return this.formatViewingSuggestions(suggestions);
   }
