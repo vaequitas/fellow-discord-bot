@@ -48,7 +48,7 @@ class Show extends Command {
         const chosen = viewings.get(key);
         const suggestions = await this.suggestionProvider.get(key);
         if (!suggestions)
-          return message.reply('This viewing has no suggestions')
+          return message.reply('this viewing has no suggestions')
         const reversedSuggestions = suggestions.array().reverse();
 
         const suggestionStrings = reversedSuggestions.map(element => {
