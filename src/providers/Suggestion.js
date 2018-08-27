@@ -28,6 +28,9 @@ class SuggestionProvider {
 
   async getShowSuggestion(viewingId, showId) {
     const viewing = await this.get(viewingId);
+    if (!viewing)
+      return
+
     return viewing.find(element => element.id === showId);
   }
 }
