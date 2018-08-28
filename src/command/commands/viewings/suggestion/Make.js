@@ -23,14 +23,30 @@ class Make extends Command {
     if (suggestion.match(/^https?:\/\//)) {
       const suggestionMatches = suggestion.match(/^https:\/\/anilist.co\/anime\/([0-9]+)/);
       if (!suggestionMatches)
-        return message.reply('it looks like you tried to pass a link, but the link looks malformed.');
+        return message.channel.send({embed: {
+          title: 'Suggestion Failed',
+          description: 'It looks like you tried to pass a link, but the link looks malformed.',
+          color: 16711682,
+          timestamp: new Date(),
+          footer: {
+            text: `New suggestion from ${message.author.username}`,
+          }
+        }});
 
       const showId = suggestionMatches[1];
       suggestionData = await this.showProvider.getById(showId);
     } else {
       suggestionData = await this.showProvider.searchSingle(suggestion);
       if (!suggestionData)
-        return message.reply('I couldn\'t find shows for that search term!');
+        return message.channel.send({embed: {
+          title: 'Suggestion Failed',
+          description: 'I couldn\'t find shows for that search term! You could try giving me a AniList url, or trying another search term.',
+          color: 16711682,
+          timestamp: new Date(),
+          footer: {
+            text: `New suggestion from ${message.author.username}`,
+          }
+        }});
 
       var new_message = await message.channel.send({embed: {
         title: 'Suggestion confirmation',
@@ -97,18 +113,23 @@ class Make extends Command {
 
     if (viewings.array().length === 1) {
       const result = await this.saveSuggestion(viewings.firstKey(), message.author.id, suggestionData);
-      new_message.clearReactions();
-      if (!result.ok)
-        return new_message.edit({embed: {
-            title: `Failed to save suggestion`,
-            description: `${result.error}`,
-            color: 16711682,
-            timestamp: new Date(),
-            footer: {
-              text: `New suggestion from ${message.author.username}`,
-            },
-          }});
-      return new_message.edit({embed: {
+      if (new_message) new_message.clearReactions();
+      if (!result.ok) {
+        const m = {embed: {
+          title: `Failed to save suggestion`,
+          description: `${result.error}`,
+          color: 16711682,
+          timestamp: new Date(),
+          footer: {
+            text: `New suggestion from ${message.author.username}`,
+          },
+        }}
+        if (new_message)
+          return new_message.edit(m)
+        else
+          return message.channel.send(m);
+      }
+      const m = {embed: {
         title: 'Saved Suggestion',
         description: `${message.author.username} suggested ${suggestionData.title.romaji}`,
         color: 43024,
@@ -116,7 +137,12 @@ class Make extends Command {
         footer: {
           text: `New suggestion from ${message.author.username}`,
         },
-      }});
+      }}
+
+      if (new_message)
+        return new_message.edit(m)
+      else
+        return message.channel.send(m);
     }
 
     const viewingKeys = viewings.keyArray();
