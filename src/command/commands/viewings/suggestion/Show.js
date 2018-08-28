@@ -76,16 +76,13 @@ class Show extends Command {
         const choice = collected.first()._emoji.name;
         const key = viewingKeys[emojiKeys.indexOf(choice)];
         const suggestionsList = await this.getViewingSuggestionsList(key);
-        if (!suggestionsList)
-          return message.reply('this viewing has no suggestions')
-
         new_message.clearReactions();
         return new_message.edit({embed: {
           title: `Suggestions for viewing at ${new Date(viewings.get(key).date).toUTCString()}`,
           fields: [
             {
               name: "Suggestions",
-              value: suggestionsList.join('\n')
+              value: suggestionsList ? suggestionsList.join('\n') : 'This viewing has no suggestions',
             },
           ],
           timestamp: new Date(),
