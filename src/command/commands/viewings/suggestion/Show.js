@@ -19,6 +19,13 @@ class Show extends Command {
     if (!viewings)
       return message.reply('there are no scheduled viewings to suggest shows for. Sorry!');
 
+    if (viewings.array().length === 1) {
+      const suggestionsList = await this.getViewingSuggestionsList(viewings.firstKey());
+      if (!suggestionsList)
+        return message.reply('this viewing has no suggestions')
+      return message.reply(suggestionsList, {code: true})
+    }
+
     const viewingKeys = viewings.keyArray();
     const viewingStrings = viewingKeys.map((key, index) => {
       const viewing = viewings.get(key);
@@ -28,7 +35,7 @@ class Show extends Command {
     });
 
     const m = [
-      'Which viewing do you want to see the suggestions for?:',
+      'which viewing do you want to see the suggestions for?:',
     ].concat(viewingStrings);
 
     const new_message = await message.reply(m);
@@ -46,18 +53,32 @@ class Show extends Command {
         const choice = Number(collected.first().content.trim());
         const key    = viewingKeys[choice];
         const chosen = viewings.get(key);
-        const suggestions = await this.suggestionProvider.get(key);
-        if (!suggestions)
-          return message.reply('This viewing has no suggestions')
-        const reversedSuggestions = suggestions.array().reverse();
-
-        const suggestionStrings = reversedSuggestions.map(element => {
-          console.log(element);
-          return `(${element.votes}) [ ${element.name} ] ${element.url}`
-        });
-
-        return message.reply(suggestionStrings, {code: true});
+        const suggestionsList = await this.getViewingSuggestionsList(key);
+        if (!suggestionsList)
+          return message.reply('this viewing has no suggestions')
+        return message.reply(suggestionsList, {code: true})
       });
+  }
+
+  async getViewingSuggestionsList(key) {
+    const suggestions = await this.getViewingSuggestions(key);
+    if (!suggestions)
+      return
+
+    return this.formatViewingSuggestions(suggestions);
+  }
+
+  async getViewingSuggestions(key) {
+    const suggestions = await this.suggestionProvider.get(key);
+    if (!suggestions)
+      return
+    return suggestions.array().reverse();
+  }
+
+  formatViewingSuggestions(suggestions) {
+    return suggestions.map(element => {
+      return `(${element.votes}) [ ${element.name} ] ${element.url}`
+    });
   }
 }
 
