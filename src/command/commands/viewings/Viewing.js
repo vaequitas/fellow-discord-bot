@@ -12,7 +12,6 @@ class ViewingCommand extends Command {
       long_description: [
         'This is very much a WIP. It is a minimal proof of concept.',
         'Future ideas:',
-        '  - Allow users to suggest shows for viewings.',
         '  - Allow users to vote on which show to watch.',
         '  - Allow users to opt in to being sent a DM reminder for a viewing.',
       ].join('\n'),
