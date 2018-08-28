@@ -115,7 +115,8 @@ class Make extends Command {
     });
 
     const viewing_selection_m = {embed: {
-      title: `${message.author.username}, which viewing do you want to suggest that show for?`,
+      title: 'Viewing selection',
+      description: `${message.author.username}, which viewing do you want to suggest that show for?`,
       fields: [
         {
           name: "Suggestion",
@@ -163,9 +164,30 @@ class Make extends Command {
         const userId = message.author.id;
 
         const result = await this.saveSuggestion(viewingId, userId, suggestionData);
-        if (!result.ok)
-          return message.channel.send(`${result.error} ${message.author}`)
-        message.reply('suggestion saved.');
+        if (!result.ok) {
+          new_message.edit({embed: {
+            title: `Failed to save suggestion`,
+            description: `${result.error}`,
+            color: 16711682,
+            timestamp: new Date(),
+            footer: {
+              text: `New suggestion by ${message.author.username}`,
+            },
+          }});
+          new_message.clearReactions();
+          return
+        }
+
+        new_message.clearReactions();
+        new_message.edit({embed: {
+          title: 'Saved Suggestion',
+          description: `${message.author.username} suggested ${suggestionData.title.romaji}`,
+          color: 43024,
+          timestamp: new Date(),
+          footer: {
+            text: `New suggestion by ${message.author.username}`,
+          },
+        }});
       });
   }
 
