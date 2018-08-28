@@ -8,7 +8,7 @@ class ViewingCommand extends Command {
       name: 'viewing',
       description: 'Schedule/manage/view hosting sessions',
       usages: ['viewing (defaults to get)', 'viewing create 10pm tomorrow', 'viewing get'],
-      aliases: ['host', 'viewings'],
+      aliases: ['host', 'viewings', 'schedule'],
       long_description: [
         'This is very much a WIP. It is a minimal proof of concept.',
         'Future ideas:',
