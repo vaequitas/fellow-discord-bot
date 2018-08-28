@@ -13,12 +13,29 @@ class Get extends Command {
   }
 
   async run(message, args) {
-    const viewing = await this.provider.getNext();
-    if (!viewing)
+    const viewings = await this.provider.getAllPending();
+    if (!viewings)
       return message.channel.send(`There are no viewings planned at the moment, ${message.author}.`);
 
-    const host = await this.client.users.get(viewing.host);
-    message.reply(`the next viewing is on ${new Date(viewing.date).toUTCString()}. Hosted by ${host.username}.`);
+    const viewingStrings = viewings.map(viewing => {
+      const host = this.client.users.get(viewing.host).username;
+      const date = new Date(viewing.date).toUTCString();
+      return `${date} (${host})`;
+    });
+
+    await message.channel.send({embed: {
+      title: 'Viewing schedule',
+      fields: [
+        {
+          name: "Viewings",
+          value: viewingStrings.join('\n')
+        },
+      ],
+      timestamp: new Date(),
+      footer: {
+        text: `Viewing schedule for ${message.author.username}`,
+      },
+    }});
   }
 }
 
