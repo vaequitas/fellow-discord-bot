@@ -47,7 +47,7 @@ class Make extends Command {
         ],
         timestamp: new Date(),
         footer: {
-          text: `Suggestion confirmation for ${message.author.username}`,
+          text: `New suggestion from ${message.author.username}`,
         },
       }})
       new_message.react('☑');
@@ -62,7 +62,7 @@ class Make extends Command {
               timestamp: new Date(),
               color: 16711682,
               footer: {
-                text: `Suggestion confirmation for ${message.author.username}`,
+                text: `New suggestion from ${message.author.username}`,
               },
             }});
             return false
@@ -75,7 +75,7 @@ class Make extends Command {
               timestamp: new Date(),
               color: 16711682,
               footer: {
-                text: `Suggestion confirmation for ${message.author.username}`,
+                text: `New suggestion from ${message.author.username}`,
               },
             }});
             return false;
@@ -129,7 +129,7 @@ class Make extends Command {
       ],
       timestamp: new Date(),
       footer: {
-        text: `Viewing selection for ${message.author.username}`,
+        text: `New suggestion from ${message.author.username}`,
       },
     }}
 
@@ -148,11 +148,12 @@ class Make extends Command {
       .then(async collected => {
         if (!collected.size) {
           new_message.edit({embed: {
-            title: `Viewing selection for ${message.author.username} timed out`,
+            title: 'Viewing selection',
+            description: `Viewing selection for ${message.author.username} timed out`,
             color: 16711682,
             timestamp: new Date(),
             footer: {
-              text: `Viewing selection for ${message.author.username}`,
+              text: `New suggestion from ${message.author.username}`,
             },
           }});
           new_message.clearReactions();
@@ -171,7 +172,7 @@ class Make extends Command {
             color: 16711682,
             timestamp: new Date(),
             footer: {
-              text: `New suggestion by ${message.author.username}`,
+              text: `New suggestion from ${message.author.username}`,
             },
           }});
           new_message.clearReactions();
@@ -185,7 +186,7 @@ class Make extends Command {
           color: 43024,
           timestamp: new Date(),
           footer: {
-            text: `New suggestion by ${message.author.username}`,
+            text: `New suggestion from ${message.author.username}`,
           },
         }});
       });
