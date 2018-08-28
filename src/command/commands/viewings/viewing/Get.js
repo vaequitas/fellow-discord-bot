@@ -14,8 +14,11 @@ class Get extends Command {
 
   async run(message, args) {
     const viewing = await this.provider.getNext();
+    if (!viewing)
+      return message.channel.send(`There are no viewings planned at the moment, ${message.author}.`);
+
     const host = await this.client.users.get(viewing.host);
-    message.reply(`The next viewing is on ${new Date(viewing.date).toUTCString()}, hosted by ${host}`);
+    message.reply(`the next viewing is on ${new Date(viewing.date).toUTCString()}. Hosted by ${host.username}.`);
   }
 }
 
