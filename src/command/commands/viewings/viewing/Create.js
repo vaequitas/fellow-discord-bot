@@ -53,15 +53,18 @@ class Create extends Command {
     });
     const dateString = date.toUTCString();
     const new_message = await message.reply(`are you sure you want to host a viewing on ${dateString}? React to this message to confirm`);
-    await new_message.react('☑');
-
-    const filter = (reaction, user) => reaction.emoji.name === '☑' && user.id === message.author.id
+    new_message.react('☑');
+    new_message.react('❎');
+    const filter = (reaction, user) => (reaction.emoji.name === '☑' || reaction.emoji.name === '❎') && user.id === message.author.id
     new_message.awaitReactions(filter, {time: 30000, max: 1})
       .then(async collected => {
         if (!collected.size)
           return message.reply('confirmation timed out. Cancelling creation.');
 
-        const viewingKey = await this.provider.save(viewing);
+        if (collected.has('❎'))
+          return message.channel.send(`OK, ${message.author}, cancelling creation.`);
+
+        await this.provider.save(viewing);
         return await message.reply(`succesfully created viewing!`);
       }).catch(console.error);
   }
