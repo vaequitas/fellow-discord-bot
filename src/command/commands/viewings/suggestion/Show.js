@@ -2,6 +2,7 @@ const Command = require('../../../Command.js');
 const ViewingProvider = require('../../../../providers/Viewing.js');
 const SuggestionProvider = require('../../../../providers/Suggestion.js');
 const { Collection } = require('discord.js');
+const emojis = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬'];
 
 class Show extends Command {
   constructor(...args) {
@@ -27,36 +28,68 @@ class Show extends Command {
     }
 
     const viewingKeys = viewings.keyArray();
+    const emojiKeys = viewingKeys.map((key, index) => {
+      return emojis[index];
+    });
+
     const viewingStrings = viewingKeys.map((key, index) => {
       const viewing = viewings.get(key);
       const host = this.client.users.get(viewing.host).username;
       const date = new Date(viewing.date).toUTCString();
-      return ` [${index}] ${date} (${host})`;
+      return `${emojis[index]} ${date} (${host})`;
     });
 
-    const m = [
-      'which viewing do you want to see the suggestions for?:',
-    ].concat(viewingStrings);
+    const new_message = await message.channel.send({embed: {
+      title: `${message.author.username}, which viewing do you want to see the suggestions for?`,
+      fields: [
+        {
+          name: "Viewings",
+          value: viewingStrings.join('\n')
+        },
+      ],
+      timestamp: new Date(),
+      footer: {
+        text: `Viewing selection for ${message.author.username}`,
+      },
+    }});
 
-    const new_message = await message.reply(m);
+    emojiKeys.map(emoji => {
+      new_message.react(emoji)
+    })
 
-    const filter = response => {
-      const choice = Number(response.content.trim());
-      return response.author.id === message.author.id
-        && viewingKeys.length > choice && 0 <= choice;
-    }
-    new_message.channel.awaitMessages(filter, { max: 1, time: 30000 })
+    const viewing_filter = (reaction, user) => user.id === message.author.id && emojiKeys.includes(reaction.emoji.name)
+    new_message.awaitReactions(viewing_filter, { max: 1, time: 45000 })
       .then(async collected => {
-        if (!collected.size)
-          return message.reply('selection timed out.');
+        if (!collected.size) {
+          new_message.edit({embed: {
+            title: `Viewing selection for ${message.author.username} timed out`,
+            color: 16711682,
+            timestamp: new Date(),
+            footer: {
+              text: `Viewing selection for ${message.author.username}`,
+            },
+          }});
+          new_message.clearReactions();
+          return
+        }
 
-        const choice = Number(collected.first().content.trim());
-        const key    = viewingKeys[choice];
-        const chosen = viewings.get(key);
+        const choice = collected.first()._emoji.name;
+        const key = viewingKeys[emojiKeys.indexOf(choice)];
         const suggestionsList = await this.getViewingSuggestionsList(key);
-        if (!suggestionsList)
-          return message.reply('this viewing has no suggestions')
-        return message.reply(suggestionsList, {code: true})
+        new_message.clearReactions();
+        return new_message.edit({embed: {
+          title: `Suggestions for viewing at ${new Date(viewings.get(key).date).toUTCString()}`,
+          fields: [
+            {
+              name: "Suggestions",
+              value: suggestionsList ? suggestionsList.join('\n') : 'This viewing has no suggestions',
+            },
+          ],
+          timestamp: new Date(),
+          footer: {
+            text: `Requested by ${message.author.username}`,
+          },
+        }});
       });
   }
 
@@ -77,7 +110,7 @@ class Show extends Command {
 
   formatViewingSuggestions(suggestions) {
     return suggestions.map(element => {
-      return `(${element.votes}) [ ${element.name} ] ${element.url}`
+      return `${element.votes} | [${element.name}](${element.url})`
     });
   }
 }

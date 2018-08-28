@@ -3,6 +3,7 @@ const ViewingProvider = require('../../../../providers/Viewing.js');
 const SuggestionProvider = require('../../../../providers/Suggestion.js');
 const ShowProvider = require('../../../../providers/Show.js');
 const { Collection } = require('discord.js');
+const emojis = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬'];
 
 class Make extends Command {
   constructor(...args) {
@@ -31,31 +32,64 @@ class Make extends Command {
       if (!suggestionData)
         return message.reply('I couldn\'t find shows for that search term!');
 
-      const confirm_show_message = await message.reply(`did you want to suggest ${suggestionData.title.romaji}? ${suggestionData.siteUrl}`);
-      confirm_show_message.react('☑');
-      confirm_show_message.react('❎');
+      var new_message = await message.channel.send({embed: {
+        title: 'Suggestion confirmation',
+        description: `${message.author.username}, did you want to suggest this show?`,
+        fields: [
+          {
+            name: "Title",
+            value: suggestionData.title.romaji,
+          },
+          {
+            name: "URL",
+            value: suggestionData.siteUrl,
+          },
+        ],
+        timestamp: new Date(),
+        footer: {
+          text: `Suggestion confirmation for ${message.author.username}`,
+        },
+      }})
+      new_message.react('☑');
+      new_message.react('❎');
       const filter = (reaction, user) => (reaction.emoji.name === '☑' || reaction.emoji.name === '❎') && user.id === message.author.id
-      const confirmation = await confirm_show_message.awaitReactions(filter, {time: 45000, max: 1})
+      const confirmation = await new_message.awaitReactions(filter, {time: 45000, max: 1})
         .then(async collected => {
           if (!collected.size) {
-            message.reply('confirmation timed out. Cancelling suggestion.');
+            new_message.edit({embed: {
+              title: 'Suggestion confirmation',
+              description: 'Suggestion confirmation timed out',
+              timestamp: new Date(),
+              color: 16711682,
+              footer: {
+                text: `Suggestion confirmation for ${message.author.username}`,
+              },
+            }});
             return false
           }
 
           if (collected.has('❎')) {
-            message.reply('OK. Cancelling suggestion. You could try giving me the AniList url.')
+            new_message.edit({embed: {
+              title: 'Suggestion confirmation',
+              description: 'Suggestion was denied',
+              timestamp: new Date(),
+              color: 16711682,
+              footer: {
+                text: `Suggestion confirmation for ${message.author.username}`,
+              },
+            }});
             return false;
           }
 
           return true
         });
 
+      new_message.clearReactions();
       if (!confirmation) return
     }
 
     if (!suggestionData)
       return message.reply('I couldn\'t find any shows for your suggestion!')
-
 
     const viewings = await this.viewingProvider.getAllPending();
     if (!viewings)
@@ -69,37 +103,91 @@ class Make extends Command {
     }
 
     const viewingKeys = viewings.keyArray();
+    const emojiKeys = viewingKeys.map((key, index) => {
+      return emojis[index];
+    });
+
     const viewingStrings = viewingKeys.map((key, index) => {
       const viewing = viewings.get(key);
       const host = this.client.users.get(viewing.host).username;
       const date = new Date(viewing.date).toUTCString();
-      return ` [${index}] ${date} (${host})`;
+      return `${emojis[index]} ${date} (${host})`;
     });
 
-    const m = [
-      'which viewing do you want to suggest that show for?:',
-    ].concat(viewingStrings);
+    const viewing_selection_m = {embed: {
+      title: 'Viewing selection',
+      description: `${message.author.username}, which viewing do you want to suggest that show for?`,
+      fields: [
+        {
+          name: "Suggestion",
+          value: suggestionData.title.romaji,
+        },
+        {
+          name: "Viewings",
+          value: viewingStrings.join('\n')
+        },
+      ],
+      timestamp: new Date(),
+      footer: {
+        text: `Viewing selection for ${message.author.username}`,
+      },
+    }}
 
-    const new_message = await message.reply(m);
 
-    const filter = response => {
-      const choice = Number(response.content.trim());
-      return response.author.id === message.author.id
-        && viewingKeys.length > choice && 0 <= choice;
-    }
-    new_message.channel.awaitMessages(filter, { max: 1, time: 30000 })
+    if (new_message)
+      await new_message.edit(viewing_selection_m)
+    else
+      var new_message = await message.channel.send(viewing_selection_m)
+
+    emojiKeys.map(emoji => {
+      new_message.react(emoji)
+    })
+
+    const viewing_filter = (reaction, user) => user.id === message.author.id && emojiKeys.includes(reaction.emoji.name)
+    new_message.awaitReactions(viewing_filter, { max: 1, time: 45000 })
       .then(async collected => {
-        if (!collected.size)
-          return message.reply('selection timed out.');
+        if (!collected.size) {
+          new_message.edit({embed: {
+            title: `Viewing selection for ${message.author.username} timed out`,
+            color: 16711682,
+            timestamp: new Date(),
+            footer: {
+              text: `Viewing selection for ${message.author.username}`,
+            },
+          }});
+          new_message.clearReactions();
+          return
+        }
 
-        const choice = Number(collected.first().content.trim());
-        const viewingId = viewingKeys[choice];
+        const choice = collected.first()._emoji.name;
+        const viewingId = viewingKeys[emojiKeys.indexOf(choice)];
         const userId = message.author.id;
 
         const result = await this.saveSuggestion(viewingId, userId, suggestionData);
-        if (!result.ok)
-          return message.channel.send(`${result.error} ${message.author}`)
-        message.reply('suggestion saved.');
+        if (!result.ok) {
+          new_message.edit({embed: {
+            title: `Failed to save suggestion`,
+            description: `${result.error}`,
+            color: 16711682,
+            timestamp: new Date(),
+            footer: {
+              text: `New suggestion by ${message.author.username}`,
+            },
+          }});
+          new_message.clearReactions();
+          return
+        }
+
+        new_message.clearReactions();
+        new_message.edit({embed: {
+          title: 'Saved Suggestion',
+          description: `${message.author.username} suggested ${suggestionData.title.romaji}`,
+          color: 43024,
+          timestamp: new Date(),
+          footer: {
+            text: `New suggestion by ${message.author.username}`,
+          },
+        }});
       });
   }
 
