@@ -115,13 +115,15 @@ class Show extends Command {
     const suggestions = await this.suggestionProvider.get(key);
     if (!suggestions)
       return
-    return suggestions.array().reverse();
+
+    return suggestions;
   }
 
   formatViewingSuggestions(suggestions) {
-    return suggestions.map(element => {
-      return `${element.votes} | [${element.name}](${element.url})`
-    });
+    return suggestions.map((element, userId) => {
+      const user = this.client.users.get(userId);
+      return `${element.votes} | [${element.name}](${element.url}) *suggested by ${user.username}*`
+    }).reverse();
   }
 }
 
