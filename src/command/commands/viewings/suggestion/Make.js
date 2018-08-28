@@ -32,31 +32,64 @@ class Make extends Command {
       if (!suggestionData)
         return message.reply('I couldn\'t find shows for that search term!');
 
-      const confirm_show_message = await message.reply(`did you want to suggest ${suggestionData.title.romaji}? ${suggestionData.siteUrl}`);
-      confirm_show_message.react('☑');
-      confirm_show_message.react('❎');
+      var new_message = await message.channel.send({embed: {
+        title: 'Suggestion confirmation',
+        description: `${message.author.username}, did you want to suggest this show?`,
+        fields: [
+          {
+            name: "Title",
+            value: suggestionData.title.romaji,
+          },
+          {
+            name: "URL",
+            value: suggestionData.siteUrl,
+          },
+        ],
+        timestamp: new Date(),
+        footer: {
+          text: `Suggestion confirmation for ${message.author.username}`,
+        },
+      }})
+      new_message.react('☑');
+      new_message.react('❎');
       const filter = (reaction, user) => (reaction.emoji.name === '☑' || reaction.emoji.name === '❎') && user.id === message.author.id
-      const confirmation = await confirm_show_message.awaitReactions(filter, {time: 45000, max: 1})
+      const confirmation = await new_message.awaitReactions(filter, {time: 45000, max: 1})
         .then(async collected => {
           if (!collected.size) {
-            message.reply('confirmation timed out. Cancelling suggestion.');
+            new_message.edit({embed: {
+              title: 'Suggestion confirmation',
+              description: 'Suggestion confirmation timed out',
+              timestamp: new Date(),
+              color: 16711682,
+              footer: {
+                text: `Suggestion confirmation for ${message.author.username}`,
+              },
+            }});
             return false
           }
 
           if (collected.has('❎')) {
-            message.reply('OK. Cancelling suggestion. You could try giving me the AniList url.')
+            new_message.edit({embed: {
+              title: 'Suggestion confirmation',
+              description: 'Suggestion was denied',
+              timestamp: new Date(),
+              color: 16711682,
+              footer: {
+                text: `Suggestion confirmation for ${message.author.username}`,
+              },
+            }});
             return false;
           }
 
           return true
         });
 
+      new_message.clearReactions();
       if (!confirmation) return
     }
 
     if (!suggestionData)
       return message.reply('I couldn\'t find any shows for your suggestion!')
-
 
     const viewings = await this.viewingProvider.getAllPending();
     if (!viewings)
@@ -81,7 +114,7 @@ class Make extends Command {
       return `${emojis[index]} ${date} (${host})`;
     });
 
-    const new_message = await message.channel.send({embed: {
+    const viewing_selection_m = {embed: {
       title: `${message.author.username}, which viewing do you want to suggest that show for?`,
       fields: [
         {
@@ -93,7 +126,13 @@ class Make extends Command {
       footer: {
         text: `Viewing selection for ${message.author.username}`,
       },
-    }});
+    }}
+
+
+    if (new_message)
+      await new_message.edit(viewing_selection_m)
+    else
+      var new_message = await message.channel.send(viewing_selection_m)
 
     emojiKeys.map(emoji => {
       new_message.react(emoji)
