@@ -118,6 +118,10 @@ class Make extends Command {
       title: `${message.author.username}, which viewing do you want to suggest that show for?`,
       fields: [
         {
+          name: "Suggestion",
+          value: suggestionData.title.romaji,
+        },
+        {
           name: "Viewings",
           value: viewingStrings.join('\n')
         },
