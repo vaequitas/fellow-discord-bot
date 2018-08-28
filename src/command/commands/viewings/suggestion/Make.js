@@ -97,9 +97,26 @@ class Make extends Command {
 
     if (viewings.array().length === 1) {
       const result = await this.saveSuggestion(viewings.firstKey(), message.author.id, suggestionData);
+      new_message.clearReactions();
       if (!result.ok)
-        return message.channel.send(`${result.error} ${message.author}`)
-      return message.reply('suggestion saved.');
+        return new_message.edit({embed: {
+            title: `Failed to save suggestion`,
+            description: `${result.error}`,
+            color: 16711682,
+            timestamp: new Date(),
+            footer: {
+              text: `New suggestion from ${message.author.username}`,
+            },
+          }});
+      return new_message.edit({embed: {
+        title: 'Saved Suggestion',
+        description: `${message.author.username} suggested ${suggestionData.title.romaji}`,
+        color: 43024,
+        timestamp: new Date(),
+        footer: {
+          text: `New suggestion from ${message.author.username}`,
+        },
+      }});
     }
 
     const viewingKeys = viewings.keyArray();
