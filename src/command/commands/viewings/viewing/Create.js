@@ -9,6 +9,7 @@ class Create extends Command {
     super(...args, {
       name: 'create',
       enabled: true,
+      aliases: ['schedule'],
     });
     this.provider = new ViewingProvider(this.client.firebase.database());
     this.parent = 'viewing'
