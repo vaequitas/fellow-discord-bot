@@ -9,6 +9,7 @@ class Create extends Command {
     super(...args, {
       name: 'create',
       enabled: true,
+      aliases: ['schedule'],
     });
     this.provider = new ViewingProvider(this.client.firebase.database());
     this.parent = 'viewing'
@@ -52,21 +53,66 @@ class Create extends Command {
       host: message.author.id,
     });
     const dateString = date.toUTCString();
-    const new_message = await message.reply(`are you sure you want to host a viewing on ${dateString}? React to this message to confirm`);
+    const new_message = await message.channel.send({embed: {
+      title: 'Viewing creation',
+      description: `Are you sure you want to create the below viewing, ${message.author.username}?`,
+      time: new Date(),
+      fields: [
+        {
+          name: "Date",
+          value: dateString,
+        }, {
+          name: "Host",
+          value: message.author.username
+        },
+      ],
+      footer: {
+        text: `Viewing creation for ${message.author.username}`,
+      }
+    }});
     new_message.react('☑');
     new_message.react('❎');
     const filter = (reaction, user) => (reaction.emoji.name === '☑' || reaction.emoji.name === '❎') && user.id === message.author.id
-    new_message.awaitReactions(filter, {time: 30000, max: 1})
+    await new_message.awaitReactions(filter, {time: 30000, max: 1})
       .then(async collected => {
-        if (!collected.size)
-          return message.reply('confirmation timed out. Cancelling creation.');
+        if (!collected.size) {
+          new_message.edit({embed: {
+            title: 'Viewing creation',
+            description: 'Viewing creation confirmation timed out',
+            timestamp: new Date(),
+            color: 16711682,
+            footer: {
+              text: `Viewing creation for ${message.author.username}`,
+            },
+          }});
+          return false
+        }
 
-        if (collected.has('❎'))
-          return message.channel.send(`OK, ${message.author}, cancelling creation.`);
+        if (collected.has('❎')) {
+          new_message.edit({embed: {
+            title: 'Viewing creation',
+            description: 'Viewing creation was cancelled',
+            timestamp: new Date(),
+            color: 16711682,
+            footer: {
+              text: `Viewing creation for ${message.author.username}`,
+            },
+          }});
+          return false;
+        }
 
         await this.provider.save(viewing);
-        return await message.reply(`succesfully created viewing!`);
+        new_message.edit({embed: {
+          title: 'Viewing creation',
+          description: `Viewing created`,
+          color: 43024,
+          timestamp: new Date(),
+          footer: {
+            text: `Viewing creation for ${message.author.username}`,
+          },
+        }});
       }).catch(console.error);
+    new_message.clearReactions();
   }
 }
 

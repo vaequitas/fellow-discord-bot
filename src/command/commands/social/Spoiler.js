@@ -59,7 +59,21 @@ class Spoiler extends Command {
 
     tag = tag.length ? tag : 'untagged';
 
-    const new_message = await message.channel.send(`Spoiler [${tag}] from ${message.author}. React to this message to receive it.`);
+    const new_message = await message.channel.send({embed: {
+      description: "React to this message to receive the below spoiler.",
+      color: 15316224,
+      fields: [
+        {
+          name: "Spoiler Tag",
+          value: tag,
+          inline: true,
+        }, {
+          name: "Author",
+          value: message.author.username,
+          inline: true,
+        }
+      ],
+    }});
     await new_message.react('🔊');
     return await this.spoilerProvider.save(new_message.id, spoiler);
   }

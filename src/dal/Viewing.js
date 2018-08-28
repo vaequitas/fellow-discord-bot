@@ -1,3 +1,5 @@
+const { Collection } = require('discord.js');
+
 class ViewingDal {
   constructor(database) {
     this.database = database;
@@ -32,7 +34,15 @@ class ViewingDal {
 
   async getAllAfter(date) {
     return await this.database.ref('/viewings/').orderByChild('date').startAt(date).once('value').then(snapshot => {
-      return snapshot.val();
+      if (!snapshot.val())
+        return
+
+      const viewings = new Collection();
+      snapshot.forEach((element) => {
+        viewings.set(element.key, element.val());
+      });
+
+      return viewings;
     });
   }
 

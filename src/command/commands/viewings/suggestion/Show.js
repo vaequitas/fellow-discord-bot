@@ -22,9 +22,19 @@ class Show extends Command {
 
     if (viewings.array().length === 1) {
       const suggestionsList = await this.getViewingSuggestionsList(viewings.firstKey());
-      if (!suggestionsList)
-        return message.reply('this viewing has no suggestions')
-      return message.reply(suggestionsList, {code: true})
+      return message.channel.send({embed: {
+        description: `Suggestions for viewing on ${new Date(viewings.first().date).toUTCString()}`,
+        fields: [
+          {
+            name: "Suggestions",
+            value: suggestionsList ? suggestionsList.join('\n') : 'This viewing has no suggestions',
+          },
+        ],
+        timestamp: new Date(),
+        footer: {
+          text: `Requested by ${message.author.username}`,
+        },
+      }});
     }
 
     const viewingKeys = viewings.keyArray();
@@ -40,7 +50,7 @@ class Show extends Command {
     });
 
     const new_message = await message.channel.send({embed: {
-      title: `${message.author.username}, which viewing do you want to see the suggestions for?`,
+      description: `${message.author.username}, which viewing do you want to see the suggestions for?`,
       fields: [
         {
           name: "Viewings",
@@ -62,7 +72,7 @@ class Show extends Command {
       .then(async collected => {
         if (!collected.size) {
           new_message.edit({embed: {
-            title: `Viewing selection for ${message.author.username} timed out`,
+            description: `Viewing selection for ${message.author.username} timed out`,
             color: 16711682,
             timestamp: new Date(),
             footer: {
@@ -78,7 +88,7 @@ class Show extends Command {
         const suggestionsList = await this.getViewingSuggestionsList(key);
         new_message.clearReactions();
         return new_message.edit({embed: {
-          title: `Suggestions for viewing at ${new Date(viewings.get(key).date).toUTCString()}`,
+          description: `Suggestions for viewing on ${new Date(viewings.get(key).date).toUTCString()}`,
           fields: [
             {
               name: "Suggestions",

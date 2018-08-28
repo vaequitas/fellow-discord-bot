@@ -8,11 +8,10 @@ class ViewingCommand extends Command {
       name: 'viewing',
       description: 'Schedule/manage/view hosting sessions',
       usages: ['viewing (defaults to get)', 'viewing create 10pm tomorrow', 'viewing get'],
-      aliases: ['host'],
+      aliases: ['host', 'viewings', 'schedule'],
       long_description: [
         'This is very much a WIP. It is a minimal proof of concept.',
         'Future ideas:',
-        '  - Allow users to suggest shows for viewings.',
         '  - Allow users to vote on which show to watch.',
         '  - Allow users to opt in to being sent a DM reminder for a viewing.',
       ].join('\n'),
