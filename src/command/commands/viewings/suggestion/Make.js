@@ -72,10 +72,18 @@ class Make extends Command {
         description: `${message.author.username}, did you want to suggest this show?`,
         fields: [
           {
-            name: "Title",
+            name: "Romaji",
             value: suggestionData.title.romaji,
-          },
-          {
+            inline: true,
+          }, {
+            name: "English",
+            value: suggestionData.title.english,
+            inline: true,
+          }, {
+            name: "Native",
+            value: suggestionData.title.native,
+            inline: true,
+          }, {
             name: "URL",
             value: suggestionData.siteUrl,
           },

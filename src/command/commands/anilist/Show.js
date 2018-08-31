@@ -23,11 +23,43 @@ class Show extends Command {
     const media = await this.showProvider.searchSingle(searchTerm);
 
     if (media) {
-      const m = `I found the show ${media.title.romaji}: ${media.siteUrl}`;
-      return message.reply(m);
+      return await message.channel.send({embed: {
+        title: 'New Suggestion',
+        description: `${message.author.username}, I found this show`,
+        fields: [
+          {
+            name: "Romaji",
+            value: media.title.romaji,
+            inline: true,
+          }, {
+            name: "English",
+            value: media.title.english,
+            inline: true,
+          }, {
+            name: "Native",
+            value: media.title.native,
+            inline: true,
+          }, {
+            name: "URL",
+            value: media.siteUrl,
+          },
+        ],
+        timestamp: new Date(),
+        footer: {
+          text: `Show search by ${message.author.username}`,
+        },
+      }})
     }
 
-    return message.reply(`I didn't find any shows for ${searchTerm}`)
+    return message.channel.send({embed: {
+      title: 'Suggestion Failed',
+      description: `I couldn't find shows for '${searchTerm}'`,
+      color: 16711682,
+      timestamp: new Date(),
+      footer: {
+        text: `Show search by ${message.author.username}`,
+      }
+    }});
   }
 }
 
