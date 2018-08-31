@@ -13,9 +13,17 @@ class Get extends Command {
   }
 
   async run(message, args) {
+    message.delete(0);
     const viewings = await this.provider.getAllPending();
     if (!viewings)
-      return message.channel.send(`There are no viewings planned at the moment, ${message.author}.`);
+      return message.channel.send({embed: {
+        title: 'Viewing Schedule',
+        description: 'There are no scheduled viewings',
+        timestamp: new Date(),
+        footer: {
+          text: `Viewing schedule for ${message.author.username}`,
+        },
+      }});
 
     const viewingStrings = viewings.map(viewing => {
       const host = this.client.users.get(viewing.host).username;
