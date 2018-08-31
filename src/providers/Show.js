@@ -77,6 +77,8 @@ class ShowProvider {
           siteUrl
           title {
             romaji
+            english
+            native
           }
         }
       }

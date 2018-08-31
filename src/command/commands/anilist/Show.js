@@ -29,19 +29,19 @@ class Show extends Command {
         fields: [
           {
             name: "Romaji",
-            value: media.title.romaji,
+            value: media.title.romaji || 'N/A',
             inline: true,
           }, {
             name: "English",
-            value: media.title.english,
+            value: media.title.english || 'N/A',
             inline: true,
           }, {
             name: "Native",
-            value: media.title.native,
+            value: media.title.native || 'N/A',
             inline: true,
           }, {
             name: "URL",
-            value: media.siteUrl,
+            value: media.siteUrl || 'N/A',
           },
         ],
         timestamp: new Date(),

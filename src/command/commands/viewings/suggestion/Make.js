@@ -73,19 +73,19 @@ class Make extends Command {
         fields: [
           {
             name: "Romaji",
-            value: suggestionData.title.romaji,
+            value: suggestionData.title.romaji || 'N/A',
             inline: true,
           }, {
             name: "English",
-            value: suggestionData.title.english,
+            value: suggestionData.title.english || 'N/A',
             inline: true,
           }, {
             name: "Native",
-            value: suggestionData.title.native,
+            value: suggestionData.title.native || 'N/A',
             inline: true,
           }, {
             name: "URL",
-            value: suggestionData.siteUrl,
+            value: suggestionData.siteUrl || 'N/A',
           },
         ],
         timestamp: new Date(),
@@ -200,7 +200,7 @@ class Make extends Command {
       fields: [
         {
           name: "Suggestion",
-          value: suggestionData.title.romaji,
+          value: suggestionData.title.romaji || 'N/A',
         },
         {
           name: "Viewings",
