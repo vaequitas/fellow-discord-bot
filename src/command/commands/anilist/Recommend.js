@@ -45,10 +45,45 @@ class Recommend extends Command {
     }
 
     if (!recommendation)
-      return message.reply('sorry! I couldn\'t find any shows matching your request :c');
+      return await message.channel.send({embed: {
+        title: 'Suggestion Failed',
+        description: `Sorry, ${message.author.username}. I couldn't find any shows to recommend.`,
+        color: 16711682,
+        timestamp: new Date(),
+        footer: {
+          text: `Recommendation for ${message.author.username}`,
+        }
+      }});
 
-    const m = `I recommend ${recommendation.title.romaji}, with average score ${recommendation.averageScore}%: ${recommendation.siteUrl}`;
-    return message.reply(m);
+    return await message.channel.send({embed: {
+      title: 'Recommendation',
+      description: `${message.author.username}, I recommend this show!`,
+      fields: [
+        {
+          name: "Romaji",
+          value: recommendation.title.romaji || 'N/A',
+          inline: true,
+        }, {
+          name: "English",
+          value: recommendation.title.english || 'N/A',
+          inline: true,
+        }, {
+          name: "Native",
+          value: recommendation.title.native || 'N/A',
+          inline: true,
+        }, {
+          name: "Average Score",
+          value: recommendation.averageScore || 'N/A',
+        }, {
+          name: "URL",
+          value: recommendation.siteUrl || 'N/A',
+        },
+      ],
+      timestamp: new Date(),
+      footer: {
+        text: `Recommendation for ${message.author.username}`,
+      },
+    }})
   }
 }
 

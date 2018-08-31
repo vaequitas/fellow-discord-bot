@@ -18,6 +18,7 @@ class Make extends Command {
   }
 
   async run(message, args) {
+    message.delete(0);
     const suggestion = args.join(' ').trim();
     let suggestionData = null;
     if (suggestion.match(/^https?:\/\//)) {
@@ -35,12 +36,30 @@ class Make extends Command {
 
       const showId = suggestionMatches[1];
       suggestionData = await this.showProvider.getById(showId);
+
+      if (!suggestionData) {
+        const m = {embed: {
+          title: 'Suggestion Failed',
+          description: `I was unable to get any information on the show at ${suggestion}\nAre you sure this is the right URL?`,
+          color: 16711682,
+          timestamp: new Date(),
+          footer: {
+            text: `New suggestion from ${message.author.username}`,
+          },
+        }};
+
+        if (new_message)
+          return new_message.edit(m)
+        else
+          return message.channel.send(m);
+      }
+
     } else {
       suggestionData = await this.showProvider.searchSingle(suggestion);
       if (!suggestionData)
         return message.channel.send({embed: {
           title: 'Suggestion Failed',
-          description: 'I couldn\'t find shows for that search term! You could try giving me a AniList url, or trying another search term.',
+          description: `I couldn't find shows for '${suggestion}'! You could try giving me a AniList url, or trying another search term.`,
           color: 16711682,
           timestamp: new Date(),
           footer: {
@@ -49,16 +68,24 @@ class Make extends Command {
         }});
 
       var new_message = await message.channel.send({embed: {
-        title: 'Suggestion confirmation',
+        title: 'New Suggestion',
         description: `${message.author.username}, did you want to suggest this show?`,
         fields: [
           {
-            name: "Title",
-            value: suggestionData.title.romaji,
-          },
-          {
+            name: "Romaji",
+            value: suggestionData.title.romaji || 'N/A',
+            inline: true,
+          }, {
+            name: "English",
+            value: suggestionData.title.english || 'N/A',
+            inline: true,
+          }, {
+            name: "Native",
+            value: suggestionData.title.native || 'N/A',
+            inline: true,
+          }, {
             name: "URL",
-            value: suggestionData.siteUrl,
+            value: suggestionData.siteUrl || 'N/A',
           },
         ],
         timestamp: new Date(),
@@ -73,7 +100,7 @@ class Make extends Command {
         .then(async collected => {
           if (!collected.size) {
             new_message.edit({embed: {
-              title: 'Suggestion confirmation',
+              title: 'Suggestion Failed',
               description: 'Suggestion confirmation timed out',
               timestamp: new Date(),
               color: 16711682,
@@ -86,8 +113,8 @@ class Make extends Command {
 
           if (collected.has('❎')) {
             new_message.edit({embed: {
-              title: 'Suggestion confirmation',
-              description: 'Suggestion was denied',
+              title: 'Suggestion Failed',
+              description: `Suggestion was denied by ${message.author.username}`,
               timestamp: new Date(),
               color: 16711682,
               footer: {
@@ -103,20 +130,30 @@ class Make extends Command {
       new_message.clearReactions();
       if (!confirmation) return
     }
-
-    if (!suggestionData)
-      return message.reply('I couldn\'t find any shows for your suggestion!')
-
     const viewings = await this.viewingProvider.getAllPending();
-    if (!viewings)
-      return message.reply('there are no scheduled viewings to suggest shows for. Sorry!');
+    if (!viewings) {
+      const m = {embed: {
+        title: 'Suggestion Failed',
+        description: 'There are no scheduled viewings to suggest shows for!',
+        color: 16711682,
+        timestamp: new Date(),
+        footer: {
+          text: `New suggestion from ${message.author.username}`,
+        },
+      }};
+
+      if (new_message)
+        return new_message.edit(m)
+      else
+        return message.channel.send(m);
+    }
 
     if (viewings.array().length === 1) {
       const result = await this.saveSuggestion(viewings.firstKey(), message.author.id, suggestionData);
       if (new_message) new_message.clearReactions();
       if (!result.ok) {
         const m = {embed: {
-          title: `Failed to save suggestion`,
+          title: 'Suggestion Failed',
           description: `${result.error}`,
           color: 16711682,
           timestamp: new Date(),
@@ -130,8 +167,8 @@ class Make extends Command {
           return message.channel.send(m);
       }
       const m = {embed: {
-        title: 'Saved Suggestion',
-        description: `${message.author.username} suggested ${suggestionData.title.romaji}`,
+        title: 'New Suggestion',
+        description: `${message.author.username} suggested [${suggestionData.title.romaji}](${suggestionData.siteUrl}) for the ${new Date(viewings.first().date).toUTCString()} viewing`,
         color: 43024,
         timestamp: new Date(),
         footer: {
@@ -158,12 +195,12 @@ class Make extends Command {
     });
 
     const viewing_selection_m = {embed: {
-      title: 'Viewing selection',
+      title: 'New Suggestion',
       description: `${message.author.username}, which viewing do you want to suggest that show for?`,
       fields: [
         {
           name: "Suggestion",
-          value: suggestionData.title.romaji,
+          value: suggestionData.title.romaji || 'N/A',
         },
         {
           name: "Viewings",
@@ -191,7 +228,7 @@ class Make extends Command {
       .then(async collected => {
         if (!collected.size) {
           new_message.edit({embed: {
-            title: 'Viewing selection',
+            title: 'New Suggestion',
             description: `Viewing selection for ${message.author.username} timed out`,
             color: 16711682,
             timestamp: new Date(),
@@ -210,7 +247,7 @@ class Make extends Command {
         const result = await this.saveSuggestion(viewingId, userId, suggestionData);
         if (!result.ok) {
           new_message.edit({embed: {
-            title: `Failed to save suggestion`,
+            title: 'New Suggestion',
             description: `${result.error}`,
             color: 16711682,
             timestamp: new Date(),
@@ -224,8 +261,8 @@ class Make extends Command {
 
         new_message.clearReactions();
         new_message.edit({embed: {
-          title: 'Saved Suggestion',
-          description: `${message.author.username} suggested ${suggestionData.title.romaji}`,
+          title: 'New Suggestion',
+          description: `${message.author.username} suggested [${suggestionData.title.romaji}](${suggestionData.siteUrl}) for the ${new Date(viewings.first().date).toUTCString()} viewing`,
           color: 43024,
           timestamp: new Date(),
           footer: {

@@ -20,13 +20,36 @@ class Get extends Command {
       if (!mentions.size)
         return
 
-      member = mentions.first();
+      member = mentions.first().user;
     }
 
     const profile = await this.getProfile(member.id);
     if (!profile)
-      return message.channel.send(`${member} has not linked their profile`);
-    return message.channel.send(`Found the following profile for ${member}: ${profile}`);
+      return message.channel.send({embed: {
+        title: 'Profile Request',
+        description: `${member.username} has not linked their profile`,
+        color: 16711682,
+        timestamp: new Date(),
+        footer: {
+          text: `Profile request from ${message.author.username}`
+        }
+      }})
+
+    return message.channel.send({embed: {
+      title: 'Profile Request',
+      description: `Found the following profile for ${member.username}`,
+      color: 43024,
+      timestamp: new Date(),
+      fields: [
+        {
+          name: 'Profile URL',
+          value: profile,
+        },
+      ],
+      footer: {
+        text: `Profile request from ${message.author.username}`
+      }
+    }})
   }
 
   async getProfile(userId) {

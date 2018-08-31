@@ -16,9 +16,18 @@ class Show extends Command {
   }
 
   async run(message, args) {
+    message.delete(0);
     const viewings = await this.viewingProvider.getAllPending();
     if (!viewings)
-      return message.reply('there are no scheduled viewings to suggest shows for. Sorry!');
+      return message.channel.send({embed: {
+        title: 'Suggestion Failed',
+        description: 'There are no scheduled viewings',
+        color: 16711682,
+        timestamp: new Date(),
+        footer: {
+          text: `New suggestion from ${message.author.username}`,
+        },
+      }});
 
     if (viewings.array().length === 1) {
       const suggestionsList = await this.getViewingSuggestionsList(viewings.firstKey());

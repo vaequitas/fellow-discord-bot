@@ -21,7 +21,21 @@ class Set extends Command {
 
     const userId = message.author.id;
     const user = await this.user.modifyUser(userId, {profile: profile});
-    return message.reply(`thanks! I successfuly set your profile.`);
+    return message.channel.send({embed: {
+      title: 'Profile Set',
+      description: `${message.author.username}, I succesfully set your profile`,
+      color: 43024,
+      timestamp: new Date(),
+      fields: [
+        {
+          name: 'Profile URL',
+          value: profile,
+        },
+      ],
+      footer: {
+        text: `Profile set ${message.author.username}`,
+      },
+    }})
   }
 }
 

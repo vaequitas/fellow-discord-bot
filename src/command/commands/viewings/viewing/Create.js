@@ -16,12 +16,21 @@ class Create extends Command {
   }
 
   async run(message, args) {
+    message.delete(0);
     const hasPerm = perms.roles.hosts.some(roleId => {
       return message.guild.member(message.author).roles.has(roleId)
     });
 
     if (!hasPerm)
-      return await message.reply(`you don't have permission to do that. Sorry!`)
+      return await message.channel.send({embed: {
+        title: 'Viewing Creation Failed',
+        description: 'You don\'t have permission to do that. Sorry!',
+        color: 16711682,
+        timestamp: new Date(),
+        footer: {
+          text: `Viewing creation for ${message.author.username}`,
+        },
+      }});
 
     const full_message = args.join(' ');
     const results      = await chrono.parse(full_message);
@@ -40,7 +49,15 @@ class Create extends Command {
       if (result.start.isCertain('weekday'))
         result.start.assign('day', result.start.get('day') + 7);
       else if (result.start.isCertain('day'))
-        return message.reply('you can\'t host for a day in the past');
+        return await message.channel.send({embed: {
+          title: 'Viewing Creation Failed',
+          description: 'You can\'t host a viewing for a day in the past',
+          color: 16711682,
+          timestamp: new Date(),
+          footer: {
+            text: `Viewing creation for ${message.author.username}`,
+          },
+        }});
       else if (result.start.isCertain('hour'))
         result.start.assign('day', result.start.get('day') + 1);
     }
@@ -54,7 +71,7 @@ class Create extends Command {
     });
     const dateString = date.toUTCString();
     const new_message = await message.channel.send({embed: {
-      title: 'Viewing creation',
+      title: 'Viewing Creation',
       description: `Are you sure you want to create the below viewing, ${message.author.username}?`,
       time: new Date(),
       fields: [
@@ -77,7 +94,7 @@ class Create extends Command {
       .then(async collected => {
         if (!collected.size) {
           new_message.edit({embed: {
-            title: 'Viewing creation',
+            title: 'Viewing Creation Failed',
             description: 'Viewing creation confirmation timed out',
             timestamp: new Date(),
             color: 16711682,
@@ -90,8 +107,8 @@ class Create extends Command {
 
         if (collected.has('❎')) {
           new_message.edit({embed: {
-            title: 'Viewing creation',
-            description: 'Viewing creation was cancelled',
+            title: 'Viewing Creation Failed',
+            description: `Viewing creation was cancelled by ${message.author.username}`,
             timestamp: new Date(),
             color: 16711682,
             footer: {
@@ -103,10 +120,19 @@ class Create extends Command {
 
         await this.provider.save(viewing);
         new_message.edit({embed: {
-          title: 'Viewing creation',
-          description: `Viewing created`,
+          title: 'Viewing Creation Successful',
+          description: `Viewing created for ${message.author.username}`,
           color: 43024,
           timestamp: new Date(),
+          fields: [
+            {
+              name: "Date",
+              value: dateString,
+            }, {
+              name: "Host",
+              value: message.author.username
+            },
+          ],
           footer: {
             text: `Viewing creation for ${message.author.username}`,
           },
