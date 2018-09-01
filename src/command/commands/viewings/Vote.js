@@ -49,7 +49,7 @@ class VoteCommand extends Command {
     });
 
     const new_message = await message.channel.send({embed: {
-      description: `${message.author.username}, which viewing do you want to see the suggestions for?`,
+      description: `${message.author.username}, which viewing do you want to vote on?`,
       fields: [
         {
           name: "Viewings",
@@ -58,7 +58,7 @@ class VoteCommand extends Command {
       ],
       timestamp: new Date(),
       footer: {
-        text: `Viewing selection for ${message.author.username}`,
+        text: `Voting request by ${message.author.username}`,
       },
     }});
 
@@ -75,7 +75,7 @@ class VoteCommand extends Command {
             color: 16711682,
             timestamp: new Date(),
             footer: {
-              text: `Viewing selection for ${message.author.username}`,
+              text: `Voting request by ${message.author.username}`,
             },
           }});
           new_message.clearReactions();
@@ -109,7 +109,7 @@ class VoteCommand extends Command {
       ],
       timestamp: new Date(),
       footer: {
-        text: `Requested by ${message.author.username}`,
+        text: `Voting request by ${message.author.username}`,
       },
     }});
 
