@@ -262,7 +262,7 @@ class Make extends Command {
         new_message.clearReactions();
         new_message.edit({embed: {
           title: 'New Suggestion',
-          description: `${message.author.username} suggested [${suggestionData.title.romaji}](${suggestionData.siteUrl}) for the ${new Date(viewings.first().date).toUTCString()} viewing`,
+          description: `${message.author.username} suggested [${suggestionData.title.romaji}](${suggestionData.siteUrl}) for the ${new Date(viewings.get(viewingId).date).toUTCString()} viewing`,
           color: 43024,
           timestamp: new Date(),
           footer: {
