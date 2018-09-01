@@ -1,6 +1,7 @@
 const Command = require('../../Command.js');
 const ViewingProvider = require('../../../providers/Viewing.js');
 const SuggestionProvider = require('../../../providers/Suggestion.js');
+const VoteProvider = require('../../../providers/Vote.js');
 const { Collection } = require('discord.js');
 const emojis = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬'];
 
@@ -18,6 +19,7 @@ class VoteCommand extends Command {
 
     this.viewingProvider = new ViewingProvider(this.client.firebase.database());
     this.suggestionProvider = new SuggestionProvider(this.client.firebase.database());
+    this.voteProvider = new VoteProvider(this.client.firebase.database());
   }
 
   async run(message, args) {
@@ -150,13 +152,13 @@ class VoteCommand extends Command {
         },
       }});
 
-    const suggestionResult = await this.addVote(viewingChoice, suggestionChoice);
+    const suggestionResult = await this.addVote(viewingChoice, message.author.id, suggestionChoice);
     if (!suggestionResult.ok)
       return
 
     return await new_message.edit({embed: {
       title:  'Succesfully Voted',
-      description: `${message.author.username} voted`,
+      description: `${message.author.username} voted for ${suggestions.get(suggestionChoice).name}`,
       timestamp: new Date(),
       footer: {
         text: `Voting request for ${message.author.username}`,
@@ -179,8 +181,8 @@ class VoteCommand extends Command {
     }).reverse();
   }
 
-  async addVote(viewingId, suggestionId) {
-    return this.suggestionProvider.increment(viewingId, suggestionId);
+  async addVote(viewingId, userId, suggestionId) {
+    return await this.voteProvider.addVote(viewingId, userId, suggestionId);
   }
 }
 
