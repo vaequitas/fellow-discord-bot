@@ -26,6 +26,13 @@ class SuggestionProvider {
     }
   }
 
+  async increment(viewingId, suggestionId) {
+    const existingSuggestion = await this.getUserSuggestion(viewingId, suggestionId);
+    const newSuggestion = {votes: existingSuggestion.votes + 1};
+    await this.dal.update(viewingId, suggestionId, newSuggestion);
+    return { ok: true };
+  }
+
   async get(viewingId) {
     const suggestionsRaw = await this.dal.get(viewingId);
     if (!suggestionsRaw) return

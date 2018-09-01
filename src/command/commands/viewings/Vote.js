@@ -139,8 +139,6 @@ class VoteCommand extends Command {
     if (!suggestionChoice)
       return
 
-    console.log(suggestionChoice)
-    console.log(message.author.id)
     if (suggestionChoice === message.author.id)
       return new_message.edit({embed: {
         title: 'Voting Failed',
@@ -152,7 +150,18 @@ class VoteCommand extends Command {
         },
       }});
 
-    const suggestionResult = this.vote
+    const suggestionResult = await this.addVote(viewingChoice, suggestionChoice);
+    if (!suggestionResult.ok)
+      return
+
+    return await new_message.edit({embed: {
+      title:  'Succesfully Voted',
+      description: `${message.author.username} voted`,
+      timestamp: new Date(),
+      footer: {
+        text: `Voting request for ${message.author.username}`,
+      },
+    }});
   }
 
   async getViewingSuggestions(key) {
@@ -168,6 +177,10 @@ class VoteCommand extends Command {
       const user = this.client.users.get(userId);
       return `${l_emojis.get(userId)} | [${element.name}](${element.url}) *suggested by ${user.username}*`
     }).reverse();
+  }
+
+  async addVote(viewingId, suggestionId) {
+    return this.suggestionProvider.increment(viewingId, suggestionId);
   }
 }
 
