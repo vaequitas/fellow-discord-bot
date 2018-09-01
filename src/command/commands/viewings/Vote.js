@@ -160,6 +160,7 @@ class VoteCommand extends Command {
     return await new_message.edit({embed: {
       title:  'Succesfully Voted',
       description: `${message.author.username} voted for ${suggestions.get(suggestionChoice).name}`,
+      color: 43024,
       timestamp: new Date(),
       footer: {
         text: `Voting request for ${message.author.username}`,
