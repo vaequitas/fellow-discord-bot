@@ -69,3 +69,15 @@ I'm creating classes and injectind dependencies which is a major ball-ache. Woul
 ### Non-relative require / Namepsacing
 
 Is this possible in NodeJS? Relative requires is ugly and a pain to maintain.
+
+### Class to manage polls
+
+This should take options and return polls, with optional emoji override
+
+### Discord Message Helper
+
+This should provide helpers for things like colour codes etc.
+
+### Condense/Reuse message code
+
+Each command is ridiculously hefty due to it's bespoke nature. THere must be a way I can reuse some of this code.
