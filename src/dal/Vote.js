@@ -3,7 +3,8 @@ class VoteDal {
     this.database = database;
   }
 
-  async update(viewingId, userId, config) {
+  async update(viewingId, userId, suggestionId) {
+    return await this.database.ref(`/votes/${viewingId}/${userId}`).update(suggestionId)
   }
 
   async get(viewingId, userId) {

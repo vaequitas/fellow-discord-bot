@@ -7,6 +7,8 @@ class VoteProvider {
   }
 
   async addVote(viewingId, userId, suggestionId) {
+    await this.dal.update(viewingId, userId, suggestionId);
+    return {ok: true}
   }
 }
 
