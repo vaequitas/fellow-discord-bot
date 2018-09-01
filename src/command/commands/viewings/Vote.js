@@ -180,7 +180,7 @@ class VoteCommand extends Command {
     return suggestions.map((element, userId) => {
       const user = this.client.users.get(userId);
       return `${l_emojis.get(userId)} | [${element.name}](${element.url}) *suggested by ${user.username}*`
-    }).reverse();
+    });
   }
 
   async addVote(viewingId, userId, suggestionId) {
