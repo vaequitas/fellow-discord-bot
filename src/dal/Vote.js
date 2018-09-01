@@ -9,6 +9,12 @@ class VoteDal {
 
   async get(viewingId, userId) {
   }
+
+  async getAll(viewingId) {
+    return await this.database.ref('/votes/' + viewingId).once('value').then(function(snapshot) {
+      return snapshot.val();
+    });
+  }
 }
 
 module.exports = VoteDal;

@@ -156,6 +156,7 @@ class VoteCommand extends Command {
     if (!suggestionResult.ok)
       return
 
+    await new_message.clearReactions();
     return await new_message.edit({embed: {
       title:  'Succesfully Voted',
       description: `${message.author.username} voted for ${suggestions.get(suggestionChoice).name}`,

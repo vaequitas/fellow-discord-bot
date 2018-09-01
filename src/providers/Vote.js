@@ -10,6 +10,18 @@ class VoteProvider {
     await this.dal.update(viewingId, userId, suggestionId);
     return {ok: true}
   }
+
+  async getAll(viewingId) {
+    const votesRaw = await this.dal.getAll(viewingId);
+    const votes = new Collection();
+    if (!votesRaw) return votes;
+
+    for (const vote in votesRaw) {
+      votes.set(vote, votesRaw[vote]);
+    }
+
+    return votes;
+  }
 }
 
 module.exports = VoteProvider;

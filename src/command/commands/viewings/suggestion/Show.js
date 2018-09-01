@@ -1,6 +1,7 @@
 const Command = require('../../../Command.js');
 const ViewingProvider = require('../../../../providers/Viewing.js');
 const SuggestionProvider = require('../../../../providers/Suggestion.js');
+const VoteProvider = require('../../../../providers/Vote.js');
 const { Collection } = require('discord.js');
 const emojis = ['🇦', '🇧', '🇨', '🇩', '🇪', '🇫', '🇬'];
 
@@ -13,6 +14,7 @@ class Show extends Command {
     this.parent = 'suggestion'
     this.viewingProvider = new ViewingProvider(this.client.firebase.database());
     this.suggestionProvider = new SuggestionProvider(this.client.firebase.database());
+    this.voteProvider = new VoteProvider(this.client.firebase.database());
   }
 
   async run(message, args) {
@@ -117,8 +119,11 @@ class Show extends Command {
     if (!suggestions)
       return
 
-    return this.formatViewingSuggestions(suggestions);
+    const votes = await this.voteProvider.getAll(key);
+
+    return this.formatViewingSuggestions(suggestions, votes);
   }
+
 
   async getViewingSuggestions(key) {
     const suggestions = await this.suggestionProvider.get(key);
@@ -128,10 +133,11 @@ class Show extends Command {
     return suggestions;
   }
 
-  formatViewingSuggestions(suggestions) {
+  formatViewingSuggestions(suggestions, votes) {
     return suggestions.map((element, userId) => {
+      const elementVotes = votes.filter(suggestionId => suggestionId == userId).array().length;
       const user = this.client.users.get(userId);
-      return `${element.votes} | [${element.name}](${element.url}) *suggested by ${user.username}*`
+      return `${elementVotes} | [${element.name}](${element.url}) *suggested by ${user.username}*`
     }).reverse();
   }
 }
